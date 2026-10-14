@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Steal An Egg Wiki + Dream Pet Card</title>
+<meta name="description" content="Fan-made Steal An Egg pet index with a Roblox avatar lookup and a dream pet card.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   Dream Egg styles (search, card, modal)
+   ========================================================= */
+:root{
+  --ink:#2a1b3d;
+  --green:#4fdc4a; --green-d:#249a2a;
+  --blue:#3fa9ff; --blue-d:#1a63c4;
+  --pink:#ff5fa8; --pink-d:#c42a72;
+  --yellow:#ffd23a; --yellow-d:#d48a00;
+  --rc:#c3ccd6; --rl:#eef2f6; --rd:#6f7d8c;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;font-weight:800;color:var(--ink);
+  min-height:100vh;overflow-x:hidden;
+  background:radial-gradient(circle at 80% 10%,rgba(255,255,255,.25) 0 90px,transparent 91px),
+             linear-gradient(180deg,#4fc3a1 0%,#3aa6c9 50%,#4a6fd8 100%);
+  background-color:#3aa6c9;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(rgba(255,255,255,.16) 2px,transparent 2.5px);background-size:26px 26px}
+body.noscroll{overflow:hidden}
+
+.banner{position:relative;z-index:5;background:repeating-linear-gradient(-45deg,#ffd23a 0 18px,#ffc400 18px 36px);
+  border-bottom:5px solid var(--ink);padding:10px 16px;text-align:center;font-size:15px;line-height:1.35;font-weight:900}
+.banner b{font-family:'Lilita One';font-weight:400;font-size:17px}
+nav.top{position:relative;z-index:2;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:14px 16px 0}
+.navbtn{font-family:'Lilita One';font-size:17px;color:#fff;text-decoration:none;-webkit-text-stroke:4px var(--ink);paint-order:stroke fill;
+  background:linear-gradient(180deg,rgba(255,255,255,.35) 0 45%,transparent 46%),var(--blue);
+  border:4px solid var(--ink);border-radius:16px;padding:6px 16px 8px;box-shadow:inset 0 -5px 0 var(--blue-d),0 5px 0 var(--ink)}
+.navbtn.on{background:linear-gradient(180deg,rgba(255,255,255,.35) 0 45%,transparent 46%),var(--yellow);box-shadow:inset 0 -5px 0 var(--yellow-d),0 5px 0 var(--ink)}
+.navbtn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+
+.hero{position:relative;z-index:1;text-align:center;padding:22px 16px 6px}
+.hero h1{margin:0;font-family:'Lilita One';font-weight:400;font-size:clamp(40px,9vw,76px);line-height:.95;color:#fff;
+  -webkit-text-stroke:10px var(--ink);paint-order:stroke fill;text-shadow:0 7px 0 var(--ink);transform:rotate(-2deg)}
+.hero h1 span{display:inline-block;margin-top:8px;font-size:.55em;background:var(--pink);border:5px solid var(--ink);border-radius:18px;
+  padding:0 18px 6px;box-shadow:0 6px 0 var(--ink);-webkit-text-stroke:6px var(--ink);transform:rotate(3deg)}
+.hero p{margin:16px auto 0;max-width:620px;color:#fff;font-size:16px;text-shadow:0 2px 0 rgba(42,27,61,.6)}
+
+.panel{background:#fff;border:5px solid var(--ink);border-radius:28px;box-shadow:0 8px 0 var(--ink);padding:22px 18px 18px;position:relative;min-width:0}
+.panel::after{content:"";position:absolute;left:14px;right:14px;top:8px;height:10px;border-radius:10px;background:rgba(255,255,255,.7);pointer-events:none}
+.ptitle{position:relative;z-index:2;word-spacing:5px;margin:-40px 0 14px;display:flex;align-items:center;gap:10px;font-family:'Lilita One';font-weight:400;font-size:28px;
+  color:#fff;-webkit-text-stroke:6px var(--ink);paint-order:stroke fill;text-shadow:0 4px 0 var(--ink)}
+.num{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--yellow);border:4px solid var(--ink);
+  box-shadow:inset 0 -5px 0 var(--yellow-d),0 4px 0 var(--ink);font-size:24px;-webkit-text-stroke:0;color:var(--ink);text-shadow:none;flex:none}
+
+.btn{--b:var(--green);--bd:var(--green-d);font-family:'Lilita One';font-size:20px;letter-spacing:.4px;color:#fff;cursor:pointer;
+  -webkit-text-stroke:4px var(--ink);paint-order:stroke fill;
+  background:linear-gradient(180deg,rgba(255,255,255,.35) 0 45%,transparent 46%),var(--b);
+  border:4px solid var(--ink);border-radius:18px;padding:10px 20px 12px;
+  box-shadow:inset 0 -6px 0 var(--bd),0 6px 0 var(--ink);
+  transition:transform .08s,box-shadow .08s,filter .15s;position:relative;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(5px);box-shadow:inset 0 -3px 0 var(--bd),0 1px 0 var(--ink)}
+.btn:focus-visible{outline:4px solid #fff;outline-offset:3px}
+.btn[disabled]{filter:grayscale(.6);cursor:wait}
+.btn-blue{--b:var(--blue);--bd:var(--blue-d)}
+.btn-yellow{--b:var(--yellow);--bd:var(--yellow-d)}
+
+label.lbl{display:block;font-family:'Lilita One';font-size:18px;margin:0 0 6px}
+.row{display:flex;gap:10px}
+.input{flex:1;min-width:0;font:inherit;font-family:'Lilita One';font-size:20px;color:var(--ink);
+  background:#f6f4ff;border:4px solid var(--ink);border-radius:18px;padding:10px 14px;box-shadow:inset 0 5px 0 rgba(42,27,61,.12)}
+.input::placeholder{color:#a79cc0}
+.input:focus{outline:none;background:#fff;box-shadow:inset 0 5px 0 rgba(42,27,61,.12),0 0 0 4px var(--yellow)}
+.safe{margin:12px 0 0;padding:10px 12px;border:3px dashed #8b7fb0;border-radius:16px;background:#f6f4ff;font-size:14px;line-height:1.4}
+.player-out{margin-top:14px}
+.pbox{display:flex;align-items:center;gap:14px;padding:12px;border:4px solid var(--ink);border-radius:20px;
+  background:linear-gradient(180deg,#e9fbe7,#c9f3c4);box-shadow:0 5px 0 var(--ink)}
+.pbox.err{background:linear-gradient(180deg,#fff0f0,#ffd3d3)}
+.pbox.idle{background:linear-gradient(180deg,#f3f0ff,#e3dcff)}
+.ava{flex:none;width:78px;height:78px;border-radius:50%;border:4px solid var(--ink);background:radial-gradient(circle at 35% 30%,#fff,#cfd8e6);overflow:hidden;display:grid;place-items:center}
+.ava img{width:100%;height:100%;object-fit:cover;display:block}
+.ava svg{width:70%;height:70%}
+.pname{font-family:'Lilita One';font-size:24px;line-height:1.05;word-break:break-word}
+.puser{font-size:14px;color:#5b4d70}
+.pmsg{font-size:14px;line-height:1.35}
+.loading .ava{animation:spin 1s linear infinite}
+
+/* dream card */
+.dcard{--glow:var(--rc);position:relative;overflow:hidden;width:100%;max-width:400px;margin:0 auto;
+  border:6px solid var(--ink);border-radius:30px;padding:14px 14px 12px;color:var(--ink);
+  background:linear-gradient(180deg,var(--rl) 0%,#fff 38%,var(--rl) 100%);
+  box-shadow:0 8px 0 var(--ink),0 0 0 4px #fff inset;isolation:isolate}
+.dcard::before{content:"";position:absolute;inset:6px;border-radius:22px;border:3px solid var(--rc);pointer-events:none;z-index:3}
+.dc-top{position:relative;z-index:2;display:flex;align-items:center;gap:10px}
+.dc-ava{flex:none;width:64px;height:64px;border-radius:50%;border:4px solid var(--ink);overflow:hidden;background:radial-gradient(circle at 35% 30%,#fff,#cfd8e6);display:grid;place-items:center;box-shadow:0 4px 0 var(--ink)}
+.dc-ava img{width:100%;height:100%;object-fit:cover}
+.dc-ava svg{width:70%;height:70%}
+.dc-who{flex:1;min-width:0}
+.dc-dn{font-family:'Lilita One';font-size:22px;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc-un{font-size:13px;color:#5b4d70;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc-badge{flex:none;font-family:'Lilita One';font-size:14px;line-height:1;text-align:center;color:#fff;-webkit-text-stroke:3.5px var(--ink);paint-order:stroke fill;
+  background:var(--pink);border:3px solid var(--ink);border-radius:12px;padding:5px 8px 6px;transform:rotate(6deg);box-shadow:0 3px 0 var(--ink)}
+.dc-stage{position:relative;z-index:1;margin:12px 0 6px;aspect-ratio:1/1;border:4px solid var(--ink);border-radius:24px;overflow:hidden;
+  background:radial-gradient(circle at 50% 45%,#fff 0 18%,var(--rl) 45%,var(--rc) 100%)}
+.dc-stage .rays{position:absolute;left:50%;top:50%;width:170%;aspect-ratio:1/1;translate:-50% -50%;
+  background:repeating-conic-gradient(rgba(255,255,255,.55) 0 9deg,transparent 9deg 22.5deg);animation:spin 18s linear infinite;
+  -webkit-mask:radial-gradient(circle,#000 20%,transparent 68%);mask:radial-gradient(circle,#000 20%,transparent 68%)}
+.dc-petwrap{position:absolute;inset:8%;display:grid;place-items:center;z-index:1}
+.dc-pet{width:100%;transform:scale(.82);transition:transform .45s cubic-bezier(.3,1.6,.5,1)}
+.dc-pet .pet-svg{width:100%;height:auto;filter:drop-shadow(0 6px 0 rgba(42,27,61,.25))}
+.dc-name{position:relative;z-index:2;text-align:center;font-family:'Lilita One';font-size:clamp(24px,7vw,32px);line-height:1.02;margin-top:4px;
+  color:#fff;-webkit-text-stroke:7px var(--ink);paint-order:stroke fill;text-shadow:0 4px 0 var(--ink);word-break:break-word}
+.dc-pillrow{position:relative;z-index:2;text-align:center;margin:8px 0 10px}
+.dc-pillrow .pill{font-size:17px;padding:3px 16px 5px}
+.dc-stats{position:relative;z-index:2;display:grid;grid-template-columns:1fr;gap:8px}
+.stat{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:6px 6px 7px;text-align:center;box-shadow:0 4px 0 var(--ink);min-width:0}
+.stat b{display:block;font-family:'Lilita One';font-weight:400;font-size:22px;line-height:1.1}
+.stat small{display:block;font-size:11px;color:#6a5c80;line-height:1.2}
+.stat.cash{background:linear-gradient(180deg,#eaffdf,#b9f5a4)}
+.stat.cash b{color:#1d7a1d}
+.dc-foot{position:relative;z-index:2;margin-top:12px;text-align:center;font-size:11px;color:#5b4d70}
+.dcard.r-Secret{background:linear-gradient(180deg,#3a2a6a,#160d33);color:#fff}
+.dcard.r-Secret .dc-un,.dcard.r-Secret .dc-foot{color:#cfc3ff}
+.dcard.r-Secret::before{border-color:#7b5cff}
+.dcard.r-Secret .stat{color:var(--ink)}
+.dcard.r-Legendary,.dcard.r-Mythic,.dcard.r-Secret{box-shadow:0 8px 0 var(--ink),0 0 0 4px #fff inset,0 0 34px 4px var(--rc)}
+
+/* rarity variables */
+.r-Common{--rc:#c3ccd6;--rl:#eef2f6;--rd:#6f7d8c}
+.r-Rare{--rc:#3fa9ff;--rl:#cfeaff;--rd:#1a63c4}
+.r-Epic{--rc:#b45cff;--rl:#ecd6ff;--rd:#6b22c4}
+.r-Legendary{--rc:#ffc61e;--rl:#fff3b8;--rd:#d88400}
+.r-Mythic{--rc:#ff3f73;--rl:#ffd0dc;--rd:#b0124a}
+.r-Secret{--rc:#3a2a6a;--rl:#d9ceff;--rd:#0d0720}
+
+.pill{display:inline-block;font-family:'Lilita One';font-size:14px;color:#fff;-webkit-text-stroke:4px var(--ink);paint-order:stroke fill;
+  padding:2px 12px 4px;border:3px solid var(--ink);border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.45) 0 45%,transparent 46%),var(--rc)}
+.r-Secret .pill,.pill.r-Secret{background:linear-gradient(180deg,rgba(255,255,255,.35) 0 45%,transparent 46%),linear-gradient(90deg,#ff4f7e,#ffd23a,#3dfcff,#b46bff,#ff4f7e);background-size:100% 100%,300% 100%;animation:slide 3s linear infinite}
+
+.pet-svg{display:block;overflow:visible}
+.pet-svg > *{transform-box:fill-box}
+.pet-svg .blink{transform-box:fill-box;transform-origin:center;animation:blink 4.2s infinite}
+.pet-svg .flapL{transform-box:fill-box;transform-origin:100% 100%;animation:flapL .5s ease-in-out infinite alternate}
+.pet-svg .flapR{transform-box:fill-box;transform-origin:0% 100%;animation:flapR .5s ease-in-out infinite alternate}
+.pet-svg .flick{transform-box:fill-box;transform-origin:70% 100%;animation:flick 1.1s ease-in-out infinite alternate}
+.pet-svg .wiggle{transform-box:fill-box;transform-origin:50% 0;animation:wig 1.6s ease-in-out infinite alternate}
+.pet-svg .flicker{animation:flickr 1.3s steps(2) infinite}
+.pet-svg .bits{animation:flickr 0.9s steps(2) infinite}
+.pet-svg .ghosts{animation:glitch 2.4s steps(1) infinite}
+.bob{animation:bob 2.6s ease-in-out infinite}
+
+.sparks{position:absolute;inset:0;pointer-events:none;z-index:2}
+.spark{position:absolute;width:var(--s);height:var(--s);background:#fff;
+  clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);
+  animation:twinkle 1.8s ease-in-out infinite;filter:drop-shadow(0 0 3px #fff)}
+
+/* pet card modal */
+.pcmodal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;overflow:hidden}
+.pcmodal[hidden]{display:none}
+.pcmodal-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,#8f7bff,#2a1b5d)}
+.pcmodal-inner{position:relative;width:min(100%,420px);max-height:100%;display:flex;flex-direction:column;align-items:center;gap:14px;overflow:auto}
+.pcmodal-tip{font-family:'Lilita One';font-size:18px;color:#fff;-webkit-text-stroke:4px var(--ink);paint-order:stroke fill;text-align:center;line-height:1.2}
+.pcmodal-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.pcmodal-claimed{font-family:'Lilita One';font-size:24px;color:#fff;-webkit-text-stroke:6px var(--ink);paint-order:stroke fill;
+  text-align:center;opacity:0;transform:scale(.7);transition:opacity .3s,transform .3s;pointer-events:none}
+.pcmodal-claimed.show{opacity:1;transform:scale(1);animation:popIn .5s cubic-bezier(.3,1.7,.5,1) both}
+
+/* merged page layout */
+main.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:16px;display:grid;gap:22px}
+.search-panel{max-width:760px;margin:0 auto;width:100%}
+
+/* wiki styles */
+.wpanel{background:#fff;border:5px solid var(--ink);border-radius:28px;box-shadow:0 8px 0 var(--ink);padding:18px}
+.wcontrols{display:grid;gap:12px;margin-bottom:16px}
+@media (min-width:760px){.wcontrols{grid-template-columns:1.4fr 1fr 1fr}}
+.wfield{display:flex;flex-direction:column;gap:5px;min-width:0}
+.wfield label{font-family:'Lilita One';font-size:16px}
+.win{font:inherit;font-family:'Lilita One';font-size:18px;color:var(--ink);background:#f6f4ff;border:4px solid var(--ink);border-radius:16px;padding:8px 12px;min-width:0;width:100%;box-shadow:inset 0 4px 0 rgba(42,27,61,.12)}
+.win:focus{outline:none;box-shadow:inset 0 4px 0 rgba(42,27,61,.12),0 0 0 4px var(--yellow)}
+.wtabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.wtab{font-family:'Lilita One';font-size:16px;cursor:pointer;color:var(--ink);background:#eeeaf8;border:3px solid var(--ink);border-radius:14px;padding:5px 12px 7px;box-shadow:0 4px 0 var(--ink)}
+.wtab:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.wtab.on{background:var(--wrc,#ffd23a);color:#fff;-webkit-text-stroke:4px var(--ink);paint-order:stroke fill}
+.wcount{font-size:14px;color:#5b4d70;margin:0 0 12px}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+@media (max-width:420px){.wgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
+.wcard{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;overflow:hidden;
+  border:4px solid var(--ink);border-radius:22px;padding:10px 8px 12px;background:radial-gradient(circle at 50% 36%,#fff 0 28%,var(--wrl) 62%,var(--wrc) 130%);
+  box-shadow:inset 0 -6px 0 rgba(0,0,0,.08),0 6px 0 var(--ink);transition:transform .12s}
+.wcard:hover{transform:translateY(-4px) rotate(-1deg)}
+.wcard:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ink)}
+.wcard:focus-visible,.wtab:focus-visible{outline:4px solid #fff;outline-offset:3px}
+.wcard .pic{width:100%;aspect-ratio:1/1;display:grid;place-items:center}
+.wcard img{max-width:88%;max-height:88%;object-fit:contain;filter:drop-shadow(0 6px 0 rgba(42,27,61,.25))}
+.wcard .nm{font-family:'Lilita One';font-size:18px;line-height:1.05;margin-top:4px}
+.wcard .inc{margin-top:6px;font-size:14px;color:#1d7a1d}
+.wcard .src{font-size:11px;color:#5b4d70;line-height:1.25;margin-top:3px}
+.wpill{display:inline-block;margin-top:5px;font-family:'Lilita One';font-size:14px;color:#fff;-webkit-text-stroke:4px var(--ink);paint-order:stroke fill;padding:2px 12px 4px;border:3px solid var(--ink);border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.45) 0 45%,transparent 46%),var(--wrc)}
+.wr-Cosmic{--wrc:#4f7cff;--wrl:#d7e2ff}
+.wr-Secret{--wrc:#3a2a6a;--wrl:#d9ceff}
+.wr-Eternal{--wrc:#21d4c4;--wrl:#d2fff8}
+.wr-Divine{--wrc:#ffc61e;--wrl:#fff3b8}
+.wcard.wr-Secret{background:radial-gradient(circle at 50% 36%,#5a46a8 0 26%,#22163f 72%);color:#fff}
+.wcard.wr-Secret .nm{-webkit-text-stroke:4px var(--ink);paint-order:stroke fill}
+.wcard.wr-Secret .src{color:#d9ceff}.wcard.wr-Secret .inc{color:#9cff8a}
+.wcard.wr-Divine{box-shadow:inset 0 -6px 0 rgba(0,0,0,.08),0 6px 0 var(--ink),0 0 22px 2px #ffd84a}
+.wr-Divine .wpill{background:linear-gradient(180deg,rgba(255,255,255,.4) 0 45%,transparent 46%),linear-gradient(90deg,#ffd23a,#fff6b0,#ffb02e,#ffd23a);background-size:100% 100%,300% 100%;animation:slide 3s linear infinite}
+.wempty{text-align:center;padding:30px;font-family:'Lilita One';font-size:20px}
+
+footer{position:relative;z-index:1;max-width:900px;margin:10px auto 0;padding:16px 16px 40px;text-align:center;font-size:13px;color:#fff;text-shadow:0 1px 0 rgba(42,27,61,.6);line-height:1.5}
+
+@keyframes spin{to{rotate:360deg}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes flapL{from{transform:rotate(6deg)}to{transform:rotate(-10deg)}}
+@keyframes flapR{from{transform:rotate(-6deg)}to{transform:rotate(10deg)}}
+@keyframes flick{from{transform:rotate(-3deg) scaleY(1)}to{transform:rotate(4deg) scaleY(1.06)}}
+@keyframes wig{from{transform:skewX(-6deg)}to{transform:skewX(6deg)}}
+@keyframes flickr{0%{opacity:1}50%{opacity:.35}}
+@keyframes glitch{0%,86%,100%{transform:translate(0,0)}88%{transform:translate(-4px,1px)}91%{transform:translate(5px,-2px)}94%{transform:translate(-2px,0)}}
+@keyframes twinkle{0%,100%{transform:scale(.2) rotate(0);opacity:0}50%{transform:scale(1) rotate(45deg);opacity:1}}
+@keyframes twinkleBg{from{opacity:.5}to{opacity:1}}
+@keyframes slide{to{background-position:0 0,300% 0}}
+@keyframes popIn{0%{transform:scale(.3) rotate(-10deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="banner" role="note">
+  <b>⚠️ Fan-made site.</b> Not affiliated with Roblox or any game developer. This site does not give, send, or trade any items.
+</div>
+
+<nav class="top">
+  <a class="navbtn" href="/">🥚 Dream Egg Index</a>
+  <a class="navbtn on" href="#" aria-current="page">📖 Steal An Egg Wiki</a>
+</nav>
+
+<header class="hero">
+  <h1>Steal An Egg<br><span>PET WIKI</span></h1>
+  <p>Search your Roblox username, then click any pet below to build your Dream Pet Card.</p>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ SEARCH PANEL ============ -->
+  <section class="panel search-panel" aria-labelledby="t1">
+    <h2 class="ptitle" id="t1"><span class="num">1</span>Search</h2>
+    <form id="userForm" autocomplete="off">
+      <label class="lbl" for="username">Roblox username</label>
+      <div class="row">
+        <input class="input" id="username" name="username" maxlength="20" spellcheck="false" autocapitalize="off" placeholder="Type your username" inputmode="text">
+        <button class="btn btn-blue" id="findBtn" type="submit">Search</button>
+      </div>
+    </form>
+    <p class="safe">🔒 We only use your <u>username</u> to show your public avatar. This site will <b>never</b> ask for your password, codes, or anything else.</p>
+    <div class="player-out" id="playerOut" aria-live="polite"></div>
+  </section>
+
+  <!-- ============ WIKI INDEX ============ -->
+  <section class="wpanel">
+    <div class="wcontrols">
+      <div class="wfield"><label for="wq">Search pets</label><input class="win" id="wq" type="search" placeholder="e.g. Kitsune" autocomplete="off"></div>
+      <div class="wfield"><label for="wsrc">Found in</label><select class="win" id="wsrc"></select></div>
+      <div class="wfield"><label for="wsort">Sort</label><select class="win" id="wsort">
+        <option value="inc-desc">Highest income</option><option value="inc-asc">Lowest income</option><option value="rar">Rarest first</option><option value="az">A to Z</option></select></div>
+    </div>
+    <div class="wtabs" id="wtabs" role="tablist" aria-label="Filter by rarity"></div>
+    <p class="wcount" id="wcount" aria-live="polite"></p>
+    <div class="wgrid" id="wgrid"></div>
+  </section>
+</main>
+
+<footer>
+  Pet pictures and stats are collected from the Steal An Egg Fandom wiki and fan guides. All game art and pet names belong to the game's developer. Base income is before size and mutation bonuses.<br>
+  Roblox is a trademark of Roblox Corporation. This site is not endorsed by or connected to Roblox Corporation or any game developer.
+</footer>
+
+<!-- ============ DREAM PET CARD MODAL ============ -->
+<div class="pcmodal" id="pcmodal" hidden role="dialog" aria-modal="true" aria-label="Dream Pet Card">
+  <div class="pcmodal-bg"></div>
+  <div class="pcmodal-inner">
+    <div class="pcmodal-tip" id="pcTip">Here's your Dream Pet Card!</div>
+    <div id="pcCardHost" style="width:100%"></div>
+    <div class="pcmodal-btns" id="pcBtns"></div>
+    <div class="pcmodal-claimed" id="pcClaimed">✨ Claimed! ✨</div>
+  </div>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+/* ============ shared helpers ============ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const fmt = n => {
+  for (const [v, s] of [[1e15,"Qa"],[1e12,"T"],[1e9,"B"],[1e6,"M"],[1e3,"K"]])
+    if (n >= v) return (+(n / v).toFixed(n / v < 10 ? 2 : 1)) + s;
+  return String(+n.toFixed(1));
+};
+const fmtInt = n => n.toLocaleString("en-US");
+
+/* =========================================================
+   Pet SVG art (used by the Dream Pet Card)
+   ========================================================= */
+const O = "#2a1b3d";
+const S  = `stroke="${O}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"`;
+const S4 = `stroke="${O}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"`;
+const S3 = `stroke="${O}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+const shadow = (rx = 56, y = 186) => `<ellipse cx="100" cy="${y}" rx="${rx}" ry="8" fill="#1a0f2e" opacity=".2"/>`;
+const hl = (cx, cy, rx, ry, rot = -25, op = .6) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" transform="rotate(${rot} ${cx} ${cy})" fill="#fff" opacity="${op}"/>`;
+const eye = (x, y, r = 10) => `<g class="blink"><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${(r*1.18).toFixed(1)}" fill="#1b1230"/><circle cx="${(x-r*.32).toFixed(1)}" cy="${(y-r*.42).toFixed(1)}" r="${(r*.42).toFixed(1)}" fill="#fff"/><circle cx="${(x+r*.38).toFixed(1)}" cy="${(y+r*.4).toFixed(1)}" r="${(r*.18).toFixed(1)}" fill="#fff"/></g>`;
+const cheek = (x, y, rx = 9, c = "#ff6f9f") => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${(rx*.55).toFixed(1)}" fill="${c}" opacity=".55"/>`;
+const smile = (x, y, w = 7) => `<path d="M${x-w} ${y} q${w} ${w} ${w*2} 0" fill="none" ${S4}/>`;
+const star = (cx, cy, r, fill, extra = "") => {
+  let d = "";
+  for (let i = 0; i < 10; i++) {
+    const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r;
+    d += (i ? "L" : "M") + (cx + rr * Math.cos(a)).toFixed(1) + " " + (cy + rr * Math.sin(a)).toFixed(1);
+  }
+  return `<path d="${d}Z" fill="${fill}" ${extra}/>`;
+};
+const flower = (x, y) => [0,72,144,216,288].map(a => {
+  const r = a * Math.PI / 180;
+  return `<circle cx="${(x + 8*Math.cos(r)).toFixed(1)}" cy="${(y + 8*Math.sin(r)).toFixed(1)}" r="7" fill="#ffa6d6" ${S3}/>`;
+}).join("") + `<circle cx="${x}" cy="${y}" r="5.5" fill="#ffe14a" ${S3}/>`;
+
+let UID = 0;
+function mk(fn, vb = "-8 -8 216 216", cls = "pet-svg") {
+  const u = "z" + (UID++), defs = [];
+  let n = 0;
+  const id = () => u + "_" + (n++);
+  const kit = {
+    G(a, b, c, cx = .35, cy = .3) { const i = id(); defs.push(`<radialGradient id="${i}" cx="${cx}" cy="${cy}" r=".85"><stop offset="0" stop-color="${a}"/><stop offset=".5" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></radialGradient>`); return `url(#${i})`; },
+    L(a, b, c) { const i = id(); defs.push(`<linearGradient id="${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset=".5" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></linearGradient>`); return `url(#${i})`; },
+    Glow(c) { const i = id(); defs.push(`<radialGradient id="${i}"><stop offset="0" stop-color="${c}" stop-opacity=".75"/><stop offset=".55" stop-color="${c}" stop-opacity=".25"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient>`); return `<circle cx="100" cy="104" r="98" fill="url(#${i})"/>`; },
+    C(shape) { const i = id(); defs.push(`<clipPath id="${i}">${shape}</clipPath>`); return `url(#${i})`; },
+  };
+  const body = fn(kit);
+  return `<svg class="${cls}" viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><defs>${defs.join("")}</defs>${body}</svg>`;
+}
+
+const DRAW = {
+puddlepup: ({ G }) => {
+  const b = G("#d4f0ff", "#62bdff", "#2b7fe0"), e = G("#b0c6ff", "#5577e6", "#2d43a8");
+  return shadow(54) + `
+  <path d="M136 150 C158 146 172 124 164 102 C154 106 150 126 128 136 Z" fill="${b}" ${S}/>
+  <ellipse cx="76" cy="176" rx="16" ry="10" fill="${b}" ${S}/><ellipse cx="124" cy="176" rx="16" ry="10" fill="${b}" ${S}/>
+  <ellipse cx="100" cy="146" rx="44" ry="34" fill="${b}" ${S}/>
+  <ellipse cx="100" cy="155" rx="24" ry="19" fill="#eef9ff"/>
+  <circle cx="100" cy="146" r="7" fill="#ffd23f" ${S3}/>
+  <ellipse cx="100" cy="90" rx="56" ry="48" fill="${b}" ${S}/>
+  <ellipse cx="126" cy="70" rx="15" ry="12" fill="#2b7fe0" opacity=".28"/>
+  <path d="M54 62 C30 62 22 102 36 124 C48 134 62 118 63 96 C64 80 62 66 54 62 Z" fill="${e}" ${S}/>
+  <path d="M146 62 C170 62 178 102 164 124 C152 134 138 118 137 96 C136 80 138 66 146 62 Z" fill="${e}" ${S}/>
+  <ellipse cx="100" cy="110" rx="24" ry="16" fill="#f4fbff" ${S4}/>
+  <path d="M96 116 q4 11 8 0 Z" fill="#ff6b8b" ${S3}/>
+  <path d="M100 108 v5 M90 113 q5 5 10 0 q5 5 10 0" fill="none" ${S4}/>
+  <ellipse cx="100" cy="103" rx="9" ry="6.5" fill="${O}"/><ellipse cx="97" cy="101" rx="3" ry="2" fill="#fff"/>`
+  + eye(78, 84, 10) + eye(122, 84, 10) + cheek(66, 102) + cheek(134, 102) + hl(102, 52, 16, 6, 0);
+},
+mossbun: ({ G }) => {
+  const b = G("#e6ffdc", "#86de70", "#3f9c3c"), lf = G("#d6ff9c", "#62c43c", "#2c7a22");
+  return shadow(50) + `
+  <path d="M80 70 C60 40 62 6 80 8 C96 10 98 44 94 70 Z" fill="${lf}" ${S}/>
+  <path d="M80 16 Q86 42 88 66" fill="none" stroke="#2c7a22" stroke-width="3" stroke-linecap="round"/>
+  <g transform="rotate(16 113 70)"><path d="M106 70 C102 44 104 10 120 8 C138 6 140 40 120 70 Z" fill="${lf}" ${S}/>
+  <path d="M120 16 Q116 42 112 66" fill="none" stroke="#2c7a22" stroke-width="3" stroke-linecap="round"/></g>
+  <circle cx="142" cy="160" r="13" fill="#fbfff6" ${S4}/>
+  <ellipse cx="100" cy="150" rx="42" ry="32" fill="${b}" ${S}/>
+  <ellipse cx="100" cy="158" rx="22" ry="17" fill="#f6fff0"/>
+  <ellipse cx="74" cy="178" rx="19" ry="9" fill="${b}" ${S}/><ellipse cx="126" cy="178" rx="19" ry="9" fill="${b}" ${S}/>
+  <circle cx="100" cy="104" r="46" fill="${b}" ${S}/>`
+  + flower(68, 72) + eye(82, 102, 10) + eye(118, 102, 10) + cheek(70, 120) + cheek(130, 120) + `
+  <path d="M94 115 q6 -5 12 0 q-6 7 -12 0 Z" fill="#ff8fb1" ${S3}/>
+  <rect x="95.5" y="125" width="9" height="8" rx="2" fill="#fff" ${S3}/>
+  <path d="M100 120 v5 M91 125 q4.5 4 9 0 q4.5 4 9 0" fill="none" ${S4}/>` + hl(118, 76, 14, 7, 20, .5);
+},
+mochimeow: ({ G }) => {
+  const b = G("#fff0f7", "#ffb0d4", "#e0629c");
+  return shadow(62) + `
+  <path d="M150 166 C186 166 188 118 166 112 C156 110 152 120 160 125 C170 132 166 150 146 150 Z" fill="${b}" ${S}/>
+  <path d="M50 84 L54 28 L94 60 Z" fill="${b}" ${S}/><path d="M60 72 L62 44 L82 60 Z" fill="#ff86b8"/>
+  <path d="M150 84 L146 28 L106 60 Z" fill="${b}" ${S}/><path d="M140 72 L138 44 L118 60 Z" fill="#ff86b8"/>
+  <path d="M28 150 C28 82 60 52 100 52 C140 52 172 82 172 150 C172 180 140 186 100 186 C60 186 28 180 28 150 Z" fill="${b}" ${S}/>
+  <path d="M90 62 v12 M100 58 v16 M110 62 v12" stroke="#e0629c" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+  <ellipse cx="80" cy="178" rx="13" ry="8" fill="#fff6fb" ${S4}/><ellipse cx="120" cy="178" rx="13" ry="8" fill="#fff6fb" ${S4}/>
+  <path d="M76 185 v-5 M84 185 v-5 M116 185 v-5 M124 185 v-5" stroke="${O}" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M60 112 q11 -13 22 0 M118 112 q11 -13 22 0" fill="none" stroke="${O}" stroke-width="5.5" stroke-linecap="round"/>
+  <path d="M95 121 h10 l-5 6 Z" fill="#ff5d8f" ${S3}/>
+  <path d="M90 130 q5 6 10 0 q5 6 10 0" fill="none" ${S4}/>
+  <path d="M56 126 L32 121 M56 133 L34 139 M144 126 L168 121 M144 133 L166 139" stroke="${O}" stroke-width="3" stroke-linecap="round"/>`
+  + cheek(66, 128, 11) + cheek(134, 128, 11) + hl(74, 84, 18, 9) + `<circle cx="100" cy="160" r="8" fill="#ffd23f" ${S3}/><path d="M96 162 h8" stroke="${O}" stroke-width="2.5" stroke-linecap="round"/>`;
+},
+glimmerfin: ({ G, C }) => {
+  const b = G("#fff0a8", "#ffa63a", "#e0521e"), f = G("#c8fff6", "#3ad8c6", "#16889a");
+  const clip = C(`<ellipse cx="104" cy="100" rx="62" ry="46"/>`);
+  return shadow(44, 190) + `
+  <circle cx="164" cy="40" r="9" fill="#e8fbff" opacity=".75" stroke="#fff" stroke-width="2"/><circle cx="180" cy="18" r="5" fill="#e8fbff" opacity=".75" stroke="#fff" stroke-width="2"/>
+  <path d="M50 100 C32 70 12 64 8 72 C16 90 16 110 8 128 C12 136 32 130 50 100 Z" fill="${f}" ${S}/>
+  <path d="M78 64 C88 28 132 26 142 62 Z" fill="${f}" ${S}/>
+  <path d="M88 138 C90 162 112 168 122 144 Z" fill="${f}" ${S4}/>
+  <ellipse cx="104" cy="100" rx="62" ry="46" fill="${b}"/>
+  <g clip-path="${clip}">
+    <path d="M40 116 Q104 160 170 110 L170 160 L40 160 Z" fill="#fff6d0" opacity=".9"/>
+    <path d="M84 50 Q72 100 86 150" fill="none" stroke="#3ad8c6" stroke-width="12"/>
+    <path d="M58 82 q7 8 14 0 M58 100 q7 8 14 0 M100 74 q7 8 14 0 M100 92 q7 8 14 0 M114 80 q7 8 14 0" fill="none" stroke="#c9461a" stroke-width="3" stroke-linecap="round" opacity=".4"/>
+  </g>
+  <ellipse cx="104" cy="100" rx="62" ry="46" fill="none" ${S}/>
+  <path d="M100 112 C88 130 98 142 116 132 Z" fill="${f}" ${S4}/>`
+  + eye(128, 92, 10) + eye(152, 90, 9) + `<ellipse cx="160" cy="114" rx="6" ry="5" fill="#ff6b8b" ${S3}/>` + cheek(122, 110, 7) + cheek(168, 104, 6) + hl(94, 72, 22, 8);
+},
+shellbert: ({ G }) => {
+  const sh = G("#d8f79a", "#72c23c", "#2e7a2a"), sk = G("#fff6c0", "#ffd65c", "#d4921e");
+  return shadow(72) + `
+  <path d="M32 150 L12 160 L34 164 Z" fill="${sk}" ${S4}/>
+  <ellipse cx="60" cy="170" rx="15" ry="14" fill="${sk}" ${S}/><ellipse cx="130" cy="172" rx="15" ry="14" fill="${sk}" ${S}/>
+  <ellipse cx="148" cy="138" rx="20" ry="18" fill="${sk}" ${S}/>
+  <path d="M28 150 Q100 174 170 150 Q174 162 160 166 Q100 182 38 166 Q24 162 28 150 Z" fill="#ffe8a0" ${S}/>
+  <path d="M28 150 C28 82 64 62 98 62 C132 62 170 82 170 150 Q100 172 28 150 Z" fill="${sh}" ${S}/>
+  <path d="M74 98 L46 90 M74 124 L40 142 M122 98 L150 90 M122 124 L158 142 M98 84 L98 64 M98 138 L98 160" stroke="#2e7a2a" stroke-width="4" stroke-linecap="round"/>
+  <path d="M98 84 L122 98 L122 124 L98 138 L74 124 L74 98 Z" fill="#a8e46a" stroke="#2e7a2a" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M98 62 C96 52 98 46 100 40" fill="none" stroke="#2c7a22" stroke-width="4" stroke-linecap="round"/>
+  <path d="M100 44 C108 30 124 32 124 36 C118 46 106 48 100 44 Z" fill="#7ee04a" ${S3}/>
+  <path d="M99 48 C90 38 78 40 78 44 C84 52 94 52 99 48 Z" fill="#7ee04a" ${S3}/>
+  <circle cx="158" cy="106" r="28" fill="${sk}" ${S}/>`
+  + eye(148, 102, 8) + eye(170, 100, 8) + smile(160, 118, 7) + cheek(142, 116, 6) + cheek(178, 112, 6) + hl(66, 88, 18, 8) + hl(150, 90, 8, 4);
+},
+cinderkit: ({ G, L, Glow }) => {
+  const b = G("#ffe0a8", "#ff8c2e", "#d44e18"), fl = L("#ff3b1a", "#ff9a1e", "#fff3a0");
+  const head = "M52 78 C52 48 82 38 110 38 C138 38 168 48 168 78 C168 106 142 128 110 132 C78 128 52 106 52 78 Z";
+  return Glow("#ff8a2a") + shadow(56) + `
+  <path class="flick" d="M64 162 C22 162 14 112 30 86 C34 102 44 106 46 98 C42 76 56 52 72 42 C68 66 82 80 88 98 C98 124 94 160 64 162 Z" fill="${fl}" ${S}/>
+  <path class="flick" d="M62 150 C40 148 36 122 44 110 C48 120 56 120 58 112 C58 98 64 88 72 82 C72 96 80 108 82 120 C84 138 78 150 62 150 Z" fill="#fff6b0" opacity=".85"/>
+  <ellipse cx="90" cy="178" rx="13" ry="8" fill="#5a2a1a" ${S4}/><ellipse cx="130" cy="178" rx="13" ry="8" fill="#5a2a1a" ${S4}/>
+  <ellipse cx="110" cy="150" rx="38" ry="30" fill="${b}" ${S}/>
+  <ellipse cx="110" cy="150" rx="17" ry="20" fill="#fff4e4"/>
+  <path d="M62 72 L60 16 L104 50 Z" fill="${b}" ${S}/><path d="M68 60 L67 32 L90 50 Z" fill="#5a2a1a"/>
+  <path d="M158 72 L160 16 L116 50 Z" fill="${b}" ${S}/><path d="M152 60 L153 32 L130 50 Z" fill="#5a2a1a"/>
+  <path d="${head}" fill="${b}"/>
+  <path d="M60 92 C78 100 98 102 110 118 C122 102 142 100 160 92 C154 116 132 130 110 132 C88 130 66 116 60 92 Z" fill="#fff4e4"/>
+  <path d="${head}" fill="none" ${S}/>
+  <path d="M110 46 C103 54 104 62 110 67 C116 62 117 54 110 46 Z" fill="#ffe34a" ${S3}/>
+  <ellipse cx="110" cy="113" rx="7" ry="5" fill="${O}"/><ellipse cx="108" cy="111.5" rx="2.4" ry="1.6" fill="#fff"/>`
+  + eye(88, 84, 9) + eye(132, 84, 9) + `<path d="M76 70 l12 4 M144 70 l-12 4" stroke="${O}" stroke-width="4" stroke-linecap="round"/>`
+  + smile(110, 121, 6) + cheek(74, 102, 8) + cheek(146, 102, 8) + hl(84, 56, 16, 7);
+},
+snowhoot: ({ G, Glow }) => {
+  const b = G("#f0fbff", "#a2dcff", "#4a9be0"), w = G("#d0ecff", "#6ab4f0", "#2f6fb8");
+  return Glow("#8fd8ff") + shadow(54) + `
+  <ellipse cx="84" cy="183" rx="11" ry="5" fill="#ffb02e" ${S3}/><ellipse cx="116" cy="183" rx="11" ry="5" fill="#ffb02e" ${S3}/>
+  <path d="M50 66 L40 22 L80 46 Z" fill="${w}" ${S}/><path d="M150 66 L160 22 L120 46 Z" fill="${w}" ${S}/>
+  <path d="M100 30 C150 30 168 80 168 122 C168 162 140 182 100 182 C60 182 32 162 32 122 C32 80 50 30 100 30 Z" fill="${b}" ${S}/>
+  <ellipse cx="100" cy="142" rx="40" ry="35" fill="#f6fcff"/>
+  <path d="M82 130 q6 6 12 0 M106 130 q6 6 12 0 M94 146 q6 6 12 0 M70 146 q6 6 12 0 M118 146 q6 6 12 0 M82 162 q6 6 12 0 M106 162 q6 6 12 0" fill="none" stroke="#8ccbf2" stroke-width="3" stroke-linecap="round"/>
+  <path class="flapL" d="M38 98 C14 118 18 156 46 170 C54 150 54 120 38 98 Z" fill="${w}" ${S}/>
+  <path class="flapR" d="M162 98 C186 118 182 156 154 170 C146 150 146 120 162 98 Z" fill="${w}" ${S}/>
+  <circle cx="76" cy="86" r="25" fill="#fff" ${S4}/><circle cx="124" cy="86" r="25" fill="#fff" ${S4}/>`
+  + eye(76, 88, 13) + eye(124, 88, 13) + `
+  <path d="M90 104 L110 104 L100 120 Z" fill="#ffb02e" ${S4}/>`
+  + star(100, 52, 7, "#ffffff", S3) + cheek(56, 114, 7) + cheek(144, 114, 7) + hl(64, 50, 16, 7);
+},
+starhorn: ({ G, Glow }) => {
+  const b = G("#fbf2ff", "#d9b8ff", "#9a6ad8"), g = G("#fffbd0", "#ffd23a", "#d48a00");
+  const mane = [[60,66,20,"#ff8fc8"],[46,94,20,"#c39bff"],[54,124,17,"#7fd3ff"],[140,66,20,"#ffd36b"],[154,94,20,"#8ff0b0"],[146,124,17,"#ff8fc8"]]
+    .map(([x, y, r, c]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" ${S}/>`).join("");
+  const legs = [70, 88, 106, 124].map(x => `<rect x="${x}" y="160" width="15" height="24" rx="6" fill="${b}" ${S4}/><rect x="${x}" y="176" width="15" height="9" rx="4" fill="#ffd23a" ${S3}/>`).join("");
+  return Glow("#ffe36b") + shadow(52) + `
+  <path d="M136 156 C160 148 170 166 162 182 C152 172 148 166 134 168 Z" fill="#ff8fc8" ${S4}/>
+  <ellipse cx="100" cy="158" rx="38" ry="22" fill="${b}" ${S}/>${legs}${mane}
+  <path d="M66 66 L62 40 L86 54 Z" fill="${b}" ${S4}/><path d="M134 66 L138 40 L114 54 Z" fill="${b}" ${S4}/>
+  <ellipse cx="100" cy="96" rx="48" ry="44" fill="${b}" ${S}/>
+  <path d="M92 58 L100 6 L108 58 Z" fill="${g}" ${S4}/>
+  <path d="M94 47 L106 43 M96 34 L104 31 M98 21 L102 19" stroke="#c07a00" stroke-width="3" stroke-linecap="round"/>
+  <path d="M72 64 C82 44 108 42 120 58 C108 56 100 64 94 76 C90 66 84 62 72 64 Z" fill="#ff8fc8" ${S4}/>
+  <ellipse cx="100" cy="122" rx="22" ry="13" fill="#f3e6ff" ${S4}/>
+  <ellipse cx="92" cy="119" rx="2.5" ry="3.5" fill="${O}"/><ellipse cx="108" cy="119" rx="2.5" ry="3.5" fill="${O}"/>`
+  + eye(80, 98, 11) + eye(120, 98, 11) + `<path d="M68 92 l-7 -4 M71 87 l-5 -7 M132 92 l7 -4 M129 87 l5 -7" stroke="${O}" stroke-width="3" stroke-linecap="round"/>`
+  + smile(100, 127, 5) + cheek(64, 112, 8) + cheek(136, 112, 8) + star(168, 34, 9, "#ffe14a", S3) + star(30, 42, 6, "#ffe14a", S3) + hl(78, 72, 15, 7);
+},
+buzzbolt: ({ G, Glow, C }) => {
+  const b = G("#fffbc8", "#ffd21e", "#e08e00");
+  const body = `<ellipse cx="100" cy="118" rx="54" ry="50"/>`;
+  return Glow("#fff06b") + shadow(42, 190) + `
+  <g class="flapL"><ellipse cx="62" cy="62" rx="30" ry="18" transform="rotate(-32 62 62)" fill="#e6fbff" opacity=".88" ${S4}/><path d="M48 58 Q62 60 76 70" stroke="#9fd8f0" stroke-width="3" fill="none"/></g>
+  <g class="flapR"><ellipse cx="138" cy="62" rx="30" ry="18" transform="rotate(32 138 62)" fill="#e6fbff" opacity=".88" ${S4}/><path d="M152 58 Q138 60 124 70" stroke="#9fd8f0" stroke-width="3" fill="none"/></g>
+  <path d="M84 74 L72 50 L82 48 L70 24" fill="none" ${S}/><path d="M116 74 L128 50 L118 48 L130 24" fill="none" ${S}/>
+  <circle cx="70" cy="22" r="7" fill="#fff36b" ${S3}/><circle cx="130" cy="22" r="7" fill="#fff36b" ${S3}/>
+  <path d="M100 186 L90 164 L110 164 Z" fill="${O}" ${S3}/>
+  <ellipse cx="100" cy="118" rx="54" ry="50" fill="${b}"/>
+  <g clip-path="${C(body)}"><path d="M40 136 Q100 150 160 136 L160 150 Q100 164 40 150 Z" fill="${O}"/><path d="M40 160 Q100 174 160 160 L160 180 Q100 194 40 180 Z" fill="${O}"/></g>
+  <ellipse cx="100" cy="118" rx="54" ry="50" fill="none" ${S}/>
+  <path d="M146 90 l-8 12 h8 l-7 13" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`
+  + eye(80, 104, 11) + eye(120, 104, 11) + smile(100, 122, 7) + cheek(66, 120, 8) + cheek(134, 120, 8) + hl(74, 84, 18, 8);
+},
+abyssa: ({ G, Glow }) => {
+  const b = G("#ffe6ff", "#d77bff", "#6a34c8"), gold = G("#fff8c0", "#ffd23a", "#d48a00");
+  const cols = ["#ff9ad5", "#9be7ff", "#c7a0ff", "#9be7ff", "#ff9ad5"];
+  const tent = [62, 80, 100, 120, 138].map((x, i) => {
+    const s = i % 2 ? -1 : 1, d = `M${x} 116 q${10*s} 16 0 32 q${-10*s} 16 0 32`;
+    return `<path d="${d}" fill="none" stroke="${O}" stroke-width="12" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${cols[i]}" stroke-width="6" stroke-linecap="round"/>`;
+  }).join("");
+  const bell = "M40 120 C40 58 70 34 100 34 C130 34 160 58 160 120 q-10 10 -20 0 q-10 10 -20 0 q-10 10 -20 0 q-10 10 -20 0 q-10 10 -20 0 q-10 10 -20 0 Z";
+  return Glow("#d77bff") + shadow(46, 192) + `<g class="wiggle">${tent}</g>
+  <path d="${bell}" fill="${b}" opacity=".95" ${S}/>
+  <circle cx="60" cy="98" r="5" fill="#9be7ff" opacity=".85"/><circle cx="140" cy="70" r="6" fill="#9be7ff" opacity=".85"/>
+  <circle cx="146" cy="104" r="4" fill="#fff" opacity=".85"/><circle cx="76" cy="60" r="3.5" fill="#fff" opacity=".85"/>
+  <path d="M82 39 L84 16 L93 28 L100 12 L107 28 L116 16 L118 39 Z" fill="${gold}" ${S4}/><circle cx="100" cy="30" r="3.5" fill="#ff4f7e"/>`
+  + eye(80, 88, 10) + eye(120, 88, 10) + `<ellipse cx="100" cy="106" rx="6" ry="4.5" fill="#7a1f5a" ${S3}/>` + cheek(64, 102) + cheek(136, 102) + hl(70, 60, 20, 9);
+},
+emberwyrm: ({ G, Glow }) => {
+  const b = G("#ffb0bc", "#e83a52", "#8e1a3c"), w = G("#e2b8ff", "#9a4dff", "#561c9e"), be = G("#fffbe0", "#ffe08a", "#e0a83a");
+  return Glow("#ff5a3a") + shadow(60) + `
+  <path class="flapL" d="M64 110 C30 92 12 60 20 36 C32 54 44 52 50 44 C52 62 60 66 70 60 C74 80 74 96 64 110 Z" fill="${w}" ${S}/>
+  <path class="flapR" d="M136 110 C170 92 188 60 180 36 C168 54 156 52 150 44 C148 62 140 66 130 60 C126 80 126 96 136 110 Z" fill="${w}" ${S}/>
+  <path d="M126 162 C150 168 166 158 170 140 L186 136 L176 124 L164 134 C160 150 146 152 130 148 Z" fill="${b}" ${S}/>
+  <ellipse cx="100" cy="150" rx="40" ry="32" fill="${b}" ${S}/>
+  <ellipse cx="100" cy="156" rx="24" ry="22" fill="${be}" ${S4}/>
+  <path d="M80 148 h40 M78 160 h44" stroke="#d09030" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="78" cy="178" rx="14" ry="9" fill="${b}" ${S}/><ellipse cx="122" cy="178" rx="14" ry="9" fill="${b}" ${S}/>
+  <path d="M86 54 L93 36 L100 50 L107 36 L114 54 Z" fill="${w}" ${S4}/>
+  <path d="M68 62 C58 42 60 26 66 18 C70 34 78 44 86 52 Z" fill="${be}" ${S4}/>
+  <path d="M132 62 C142 42 140 26 134 18 C130 34 122 44 114 52 Z" fill="${be}" ${S4}/>
+  <ellipse cx="100" cy="92" rx="52" ry="44" fill="${b}" ${S}/>
+  <ellipse cx="100" cy="114" rx="26" ry="15" fill="#ffc8cf" ${S4}/>
+  <ellipse cx="92" cy="110" rx="3" ry="2.2" fill="${O}"/><ellipse cx="108" cy="110" rx="3" ry="2.2" fill="${O}"/>
+  <path d="M105 121 l5 0 l-2.5 6 Z" fill="#fff" ${S3}/>
+  <path d="M90 120 q10 8 20 0" fill="none" ${S4}/>`
+  + eye(74, 86, 11) + eye(126, 86, 11) + cheek(60, 104) + cheek(140, 104) + hl(76, 62, 18, 8)
+  + `<circle cx="150" cy="104" r="4" fill="#ffd23a"/><circle cx="160" cy="96" r="3" fill="#ff8a2a"/>`;
+},
+glitchbit: ({ L, Glow }) => {
+  const f = L("#4a3a8a", "#2a1d5a", "#150c33"), t = L("#8a72e8", "#5a44b8", "#3a2a8a"), sd = L("#2a1d52", "#1a1238", "#0d0820");
+  const shape = `<path d="M44 66 L66 40 L176 40 L156 66 Z"/><path d="M156 66 L176 40 L176 146 L156 170 Z"/><rect x="44" y="66" width="112" height="104" rx="6"/>`;
+  const ghost = (dx, c) => `<g transform="translate(${dx} 0)" fill="${c}" opacity=".55">${shape}</g>`;
+  return Glow("#3dfcff") + shadow(60) + `
+  <rect x="70" y="166" width="18" height="18" rx="4" fill="#1a1238" ${S4}/><rect x="112" y="166" width="18" height="18" rx="4" fill="#1a1238" ${S4}/>
+  <path d="M112 40 L116 22" stroke="${O}" stroke-width="5" stroke-linecap="round"/>
+  <rect class="flicker" x="109" y="9" width="14" height="14" rx="2" fill="#ff3df0" ${S3}/>
+  <g class="ghosts">${ghost(-6, "#3dfcff")}${ghost(6, "#ff3df0")}</g>
+  <path d="M44 66 L66 40 L176 40 L156 66 Z" fill="${t}" ${S}/>
+  <path d="M156 66 L176 40 L176 146 L156 170 Z" fill="${sd}" ${S}/>
+  <rect x="44" y="66" width="112" height="104" rx="6" fill="${f}" ${S}/>
+  <path d="M50 84 h100 M50 96 h100 M50 108 h100 M50 120 h100 M50 132 h100 M50 144 h100 M50 156 h100" stroke="#fff" stroke-width="2" opacity=".08"/>
+  <path d="M52 64 L68 46 L170 46" fill="none" stroke="#3dfcff" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>
+  <g class="blink"><rect x="68" y="90" width="18" height="22" fill="#3dfcff"/><rect x="114" y="90" width="18" height="22" fill="#3dfcff"/>
+  <rect x="70" y="92" width="7" height="7" fill="#fff"/><rect x="116" y="92" width="7" height="7" fill="#fff"/></g>
+  <path d="M84 130 h6 v6 h20 v-6 h6" fill="none" stroke="#3dfcff" stroke-width="5" stroke-linejoin="miter"/>
+  <rect x="54" y="118" width="12" height="7" fill="#ff3df0" opacity=".65"/><rect x="134" y="118" width="12" height="7" fill="#ff3df0" opacity=".65"/>
+  <g class="bits"><rect x="14" y="60" width="10" height="10" fill="#3dfcff" ${S3}/><rect x="182" y="160" width="9" height="9" fill="#ff3df0" ${S3}/>
+  <rect x="22" y="140" width="8" height="8" fill="#fff36b" ${S3}/><rect x="184" y="18" width="9" height="9" fill="#3dfcff" ${S3}/><rect x="28" y="22" width="7" height="7" fill="#ff3df0" ${S3}/></g>`;
+},
+};
+const petSVG = p => mk(DRAW[p.id]);
+
+/* =========================================================
+   Card meta
+   ========================================================= */
+const CARD_META = {
+  Common:    { sparks: 0, rc:"#c3ccd6" },
+  Rare:      { sparks: 0, rc:"#3fa9ff" },
+  Epic:      { sparks: 3, rc:"#b45cff" },
+  Legendary: { sparks: 5, rc:"#ffc61e" },
+  Mythic:    { sparks: 7, rc:"#ff3f73" },
+  Secret:    { sparks: 9, rc:"#3a2a6a" },
+};
+
+/* random fluff for the card bio line */
+const BIOS = [
+  "Ready for adventure!",
+  "Freshly hatched and very happy.",
+  "A dream come true.",
+  "Straight from the egg!",
+  "Yours to keep forever.",
+];
+
+/* map a wiki rarity string to a card-style pet id (best match) */
+const WIKI_TO_CARD = {
+  "Cosmic":   "glimmerfin",
+  "Secret":   "glitchbit",
+  "Eternal":  "abyssa",
+  "Divine":   "starhorn",
+};
+
+const AVATAR_PLACEHOLDER = `<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="22" y="14" width="56" height="56" rx="12" fill="#ffd23a" stroke="${O}" stroke-width="6"/><rect x="36" y="34" width="8" height="12" rx="3" fill="${O}"/><rect x="56" y="34" width="8" height="12" rx="3" fill="${O}"/><path d="M38 54 q12 9 24 0" fill="none" stroke="${O}" stroke-width="5" stroke-linecap="round"/><rect x="14" y="74" width="72" height="22" rx="10" fill="#3fa9ff" stroke="${O}" stroke-width="6"/></svg>`;
+
+/* =========================================================
+   State
+   ========================================================= */
+const st = {
+  player: null,
+  cardPetId: "puddlepup",   // which of the 12 original pets is shown on the card
+  cardPetName: "Puddlepup",
+  cardPetRarity: "Common",  // for the .r-X class
+  cardPetCps: 6,
+  cardPetBio: BIOS[0],
+  cardSparks: 0,
+};
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+};
+
+/* =========================================================
+   Player lookup
+   ========================================================= */
+const USER_RE = /^[A-Za-z0-9_]{3,20}$/;
+function renderPlayer(mode = "idle", msg = "") {
+  const out = $("#playerOut");
+  if (mode === "ok" && st.player) {
+    const p = st.player;
+    out.innerHTML = `<div class="pbox"><div class="ava"><img alt="" referrerpolicy="no-referrer" src="${esc(p.imageUrl)}"></div>
+      <div><div class="pname">${esc(p.displayName)}</div><div class="puser">@${esc(p.name)}</div><div class="pmsg">✅ Found! Now click any pet below.</div></div></div>`;
+    const img = out.querySelector("img");
+    img.onerror = () => { img.replaceWith(document.createRange().createContextualFragment(AVATAR_PLACEHOLDER)); };
+  } else if (mode === "loading") {
+    out.innerHTML = `<div class="pbox idle loading"><div class="ava">${AVATAR_PLACEHOLDER}</div><div class="pmsg">Looking up <b>${esc(msg)}</b>...</div></div>`;
+  } else if (mode === "err") {
+    out.innerHTML = `<div class="pbox err"><div class="ava">${AVATAR_PLACEHOLDER}</div><div class="pmsg">${msg}</div></div>`;
+  } else {
+    out.innerHTML = `<div class="pbox idle"><div class="ava">${AVATAR_PLACEHOLDER}</div><div class="pmsg">Type your Roblox username and press Search to put your avatar on the card.</div></div>`;
+  }
+}
+let lookupSeq = 0;
+async function findPlayer(name) {
+  name = name.trim();
+  if (!USER_RE.test(name)) {
+    renderPlayer("err", "Usernames are 3&ndash;20 letters, numbers or underscores. Just the <b>username</b>, nothing else!");
+    return;
+  }
+  const seq = ++lookupSeq, btn = $("#findBtn");
+  btn.disabled = true;
+  renderPlayer("loading", name);
+  try {
+    const r = await fetch("/api/avatar?username=" + encodeURIComponent(name), { headers: { Accept: "application/json" } });
+    const j = await r.json().catch(() => ({}));
+    if (seq !== lookupSeq) return;
+    if (!r.ok) throw new Error(j.error || "HTTP " + r.status);
+    if (!j.id) {
+      st.player = null;
+      renderPlayer("err", `Couldn't find a player called <b>${esc(name)}</b>. Check the spelling and try again.`);
+    } else {
+      st.player = { id: j.id, name: j.name, displayName: j.displayName || j.name, imageUrl: j.imageUrl };
+      store.set("dei_user", j.name);
+      renderPlayer("ok");
+    }
+  } catch (e) {
+    if (seq !== lookupSeq) return;
+    renderPlayer("err", "The avatar lookup isn't responding right now. Try again in a moment &mdash; you can still build a guest card!");
+  } finally {
+    if (seq === lookupSeq) btn.disabled = false;
+  }
+}
+
+/* =========================================================
+   Card HTML
+   ========================================================= */
+function cardHTML() {
+  const p = st.player;
+  const ava = p ? `<img alt="" referrerpolicy="no-referrer" src="${esc(p.imageUrl)}">` : AVATAR_PLACEHOLDER;
+  const who = p ? `<div class="dc-dn">${esc(p.displayName)}</div><div class="dc-un">@${esc(p.name)}</div>`
+                : `<div class="dc-dn">Guest Hatcher</div><div class="dc-un">search your username in step 1</div>`;
+  const top = `<div class="dc-top"><div class="dc-ava">${ava}</div><div class="dc-who">${who}</div><div class="dc-badge">DREAM<br>PET</div></div>`;
+
+  const rarity = st.cardPetRarity;
+  const meta = CARD_META[rarity] || CARD_META.Common;
+  const petObj = { id: st.cardPetId, name: st.cardPetName, r: rarity, cps: st.cardPetCps, bio: st.cardPetBio };
+  const svg = petSVG(petObj);
+  const sparkColors = rarity === "Secret" ? ["#3dfcff","#ff3df0","#fff36b","#fff"]
+                    : rarity === "Mythic" ? ["#fff","#ffd0dc","#ffe066"]
+                    : ["#fff","#fff6b0"];
+  const nSpark = meta.sparks;
+  const sparksHTML = nSpark ? (() => {
+    let h = "";
+    for (let i = 0; i < nSpark; i++) {
+      const s = 9 + Math.random() * 14;
+      h += `<i class="spark" style="left:${(4+Math.random()*84).toFixed(1)}%;top:${(4+Math.random()*80).toFixed(1)}%;--s:${s.toFixed(0)}px;background:${sparkColors[i % sparkColors.length]};animation-delay:${(Math.random()*1.8).toFixed(2)}s"></i>`;
+    }
+    return `<div class="sparks">${h}</div>`;
+  })() : "";
+
+  return `<div class="dcard r-${rarity}">${top}
+    <div class="dc-stage"><div class="rays"></div>${sparksHTML}
+      <div class="dc-petwrap"><div class="dc-pet"><div class="bob">${svg}</div></div></div>
+    </div>
+    <div class="dc-name">${esc(st.cardPetName)}</div>
+    <div class="dc-pillrow"><span class="pill">${rarity}</span></div>
+    <div class="dc-stats">
+      <div class="stat cash"><b>$${fmt(st.cardPetCps)}/s</b><small>base income</small></div>
+    </div>
+    <div class="dc-foot">Dream Pet Card &bull; fan-made &bull; not a real item</div>
+  </div>`;
+}
+function wireAvatarFallback(root) {
+  root.querySelectorAll(".dc-ava img").forEach(img => {
+    img.onerror = () => { img.parentNode.innerHTML = AVATAR_PLACEHOLDER; };
+  });
+}
+
+/* =========================================================
+   Card modal
+   ========================================================= */
+let pcStage = "continue";  // "continue" | "claim"
+function pcRenderCard() {
+  const host = $("#pcCardHost");
+  host.innerHTML = cardHTML();
+  wireAvatarFallback(host);
+}
+function pcOpen() {
+  pcStage = "continue";
+  $("#pcTip").textContent = "Here's your Dream Pet Card!";
+  $("#pcClaimed").classList.remove("show");
+  pcRenderCard();
+  $("#pcBtns").innerHTML = `<button class="btn btn-yellow" id="pcContinue" type="button">Continue</button>`;
+  $("#pcmodal").hidden = false;
+  document.body.classList.add("noscroll");
+  $("#pcContinue").focus({ preventScroll: true });
+}
+function pcToClaim() {
+  pcStage = "claim";
+  $("#pcTip").textContent = "Ready to make it yours?";
+  $("#pcBtns").innerHTML = `<button class="btn" id="pcClaim" type="button">Claim</button>`;
+  $("#pcClaim").focus({ preventScroll: true });
+}
+function pcClaim() {
+  $("#pcClaimed").classList.add("show");
+  $("#pcBtns").innerHTML = "";
+  setTimeout(() => { pcClose(); }, 1100);
+}
+function pcClose() {
+  $("#pcmodal").hidden = true;
+  document.body.classList.remove("noscroll");
+}
+
+/* =========================================================
+   Wiki data
+   ========================================================= */
+function parseInc(s) { const m = String(s).match(/^([\d.]+)([KMBT]?)$/); return m ? +m[1] * ({ "":1, K:1e3, M:1e6, B:1e9, T:1e12 })[m[2]] : 0; }
+
+const WIKI_PETS = [
+["mosasaurus","Mosasaurus","Eternal","180M","Prehistoric","6h","-"],
+["eternal-lunar-dragon","Eternal Lunar Dragon","Eternal","250M","Cosmic","7h","-"],
+["unicorn","Unicorn","Divine","1B","Cosmic","12h","-"],
+["oni-tiger","Oni Tiger","Eternal","600M","Cherry Blossom","8h","-"],
+["kitsune","Kitsune","Divine","1.8B","Cherry Blossom","14h","-"],
+["mutant-shark","Mutant Shark","Secret","215M","Titan Temple","3h","-"],
+["gorilla-king","Gorilla King","Eternal","880M","Titan Temple","9h","-"],
+["nightflame","Nightflame","Divine","3B","Titan Temple","16h","-"],
+["pure-jellyfish","Pure Jellyfish","Secret","225M","Angels & Demons (Light)","-","-"],
+["gargoyle","Gargoyle","Secret","225M","Angels & Demons (Dark)","-","-"],
+["centaur","Centaur","Secret","350M","Angels & Demons (Light)","-","-"],
+["razorfang","RazorFang","Secret","350M","Angels & Demons (Dark)","3h 15m","-"],
+["pegasus","Pegasus","Eternal","1.3B","Angels & Demons (Light)","-","-"],
+["skeleton-horse","Skeleton Horse","Eternal","1.3B","Angels & Demons (Dark)","5h","-"],
+["world-burner","World Burner","Divine","5B","Angels & Demons (Dark)","15h","-"],
+["dunkleosteus","Dunkleosteus","Secret","300M","Extinction Egg","-","-"],
+["skeletal-glyptodon","Skeletal Glyptodon","Secret","550M","Extinction Egg","-","-"],
+["skeletal-terrorbird","Skeletal Terrorbird","Secret","750M","Extinction Egg","-","-"],
+["skeletal-giant-sloth","Skeletal Giant Sloth","Secret","900M","Extinction Egg","-","-"],
+["gigantus","Gigantus","Eternal","1B","Extinction Egg","-","-"],
+["skeletal-dunkleosteus","Skeletal Dunkleosteus","Eternal","2.5B","Extinction Egg","-","-"],
+["skeletal-gigantus","Skeletal Gigantus","Eternal","4B","Extinction Egg","-","-"],
+["sabertooth","Sabertooth","Divine","5B","Extinction Egg","-","-"],
+["skeletal-sabertooth","Skeletal Sabertooth","Divine","9B","Extinction Egg","-","-"],
+["experiment-001","Experiment #001","Secret","285M","Event (Dr. Scramble)","3h 30m","-"],
+["mecha-chompa","Mecha Chompa","Secret","600M","Event (Dr. Scramble)","-","-"],
+["ember-dragon","Ember Dragon","Secret","600M","Event","-","-"],
+["toxic-hedgehog","Toxic Hedgehog","Secret","1.75B","Event (Dr. Scramble)","-","-"],
+["pink-dragon-experiment-010","Pink Dragon Experiment #010","Eternal","2.5B","Event (Dr. Scramble)","-","-"],
+["mecha-scrambler","Mecha Scrambler","Divine","7.5B","Event (Dr. Scramble)","-","-"],
+["mecha-crawler","Mecha Crawler","Cosmic","320M","Monster Egg","10s","1% Mecha modifier"],
+["krakenoid","Krakenoid","Eternal","500M","Monster Egg","10s","6.5%"],
+["mecha-crocodon","Mecha Crocodon","Eternal","680M","Monster Egg","10s","1% Mecha modifier"],
+["mecha-krakenoid","Mecha Krakenoid","Eternal","1B","Monster Egg","10s","1% Mecha modifier"],
+["dreadscale","Dreadscale","Divine","2B","Monster Egg","10s","0.5%"],
+["mecha-dreadscale","Mecha Dreadscale","Divine","4B","Monster Egg","10s","1% Mecha modifier"],
+["three-headed-chicken","Three Headed Chicken","Cosmic","165M","Dr. Scramble's Lab","-","-"],
+["sharkodile","Sharkodile","Secret","350M","Dr. Scramble's Lab","-","-"],
+["nuceodile","Nuceodile","Secret","500M","Dr. Scramble's Lab","-","-"],
+["eyeball-crab","Eyeball Crab","Secret","825M","Dr. Scramble's Lab","-","-"],
+["rhinobear","Rhinobear","Eternal","1B","Dr. Scramble's Lab","-","-"],
+["nuclear-mantis","Nuclear Mantis","Eternal","1.5B","Dr. Scramble's Lab","-","-"],
+["dreadstinger","Dreadstinger","Eternal","2B","Dr. Scramble's Lab","-","-"],
+["octophant","Octophant","Divine","4B","Dr. Scramble's Lab","-","-"],
+["world-eater","World Eater","Eternal","500M","Rift Machine","-","0.5%"],
+["shattered-drake","Shattered Drake","Eternal","800M","Rift Machine","-","5%"],
+["void-serpent","Void Serpent","Eternal","900M","Rift Machine","-","0.5%"],
+["shattered-colossus","Shattered Colossus","Divine","3.5B","Rift Machine","-","0.5%"],
+["luminous-spirit-manta","Luminous Spirit Manta","Secret","500M","Luminous Egg","-","-"],
+["luminous-abyss-shark","Luminous Abyss Shark","Secret","600M","Luminous Egg","-","-"],
+["terra-snapper","Terra Snapper","Eternal","750M","Luminous Egg","-","-"],
+["luminous-electric-eel","Luminous Electric Eel","Eternal","1.75B","Luminous Egg","-","-"],
+["luminous-terra-snapper","Luminous Terra Snapper","Eternal","2.5B","Luminous Egg","-","-"],
+["cthulhu","Cthulhu","Divine","3B","Luminous Egg","-","-"],
+["equinox","Equinox","Eternal","1.8B","Surge Fusion","10h","-"],
+["aetheron","Aetheron","Divine","6.9B","Surge Fusion","-","-"],
+].map(([f, name, r, inc, src, hatch, chance]) => ({ f, name, r, inc, src, hatch, chance, n: parseInc(inc) }));
+
+const WIKI_RORDER = ["Cosmic", "Secret", "Eternal", "Divine"];
+const WIKI_RCOL = { Cosmic: "#4f7cff", Secret: "#3a2a6a", Eternal: "#21d4c4", Divine: "#ffc61e" };
+const wst = { r: "All", q: "", src: "All", sort: "inc-desc" };
+
+const wGroups = [...new Set(WIKI_PETS.map(p => p.src))].sort();
+$("#wsrc").innerHTML = `<option value="All">All sources</option>` + wGroups.map(g => `<option>${g}</option>`).join("");
+
+function wRenderTabs() {
+  $("#wtabs").innerHTML = ["All", ...WIKI_RORDER].map(r => {
+    const n = r === "All" ? WIKI_PETS.length : WIKI_PETS.filter(p => p.r === r).length;
+    return `<button class="wtab ${wst.r === r ? "on" : ""}" role="tab" aria-selected="${wst.r === r}" type="button" data-wr="${r}" style="--wrc:${WIKI_RCOL[r] || "#ffd23a"}">${r} (${n})</button>`;
+  }).join("");
+}
+function wList() {
+  const q = wst.q.trim().toLowerCase();
+  const out = WIKI_PETS.filter(p => (wst.r === "All" || p.r === wst.r) && (wst.src === "All" || p.src === wst.src) && (!q || p.name.toLowerCase().includes(q)));
+  const cmp = {
+    "inc-desc": (a, b) => b.n - a.n,
+    "inc-asc":  (a, b) => a.n - b.n,
+    "rar":      (a, b) => WIKI_RORDER.indexOf(b.r) - WIKI_RORDER.indexOf(a.r) || b.n - a.n,
+    "az":       (a, b) => a.name.localeCompare(b.name),
+  }[wst.sort];
+  return out.sort(cmp);
+}
+function wRenderGrid() {
+  const l = wList();
+  $("#wcount").textContent = `Showing ${l.length} of ${WIKI_PETS.length} pets`;
+  $("#wgrid").innerHTML = l.length ? l.map(p => `<button class="wcard wr-${p.r}" type="button" data-wf="${p.f}" aria-label="Open ${esc(p.name)}, ${p.r}">
+      <div class="pic"><img src="img/${p.f}.webp" alt="${esc(p.name)}" loading="lazy" width="256" height="256"></div>
+      <div class="nm">${esc(p.name)}</div><span class="wpill">${p.r}</span>
+      <div class="inc">💰 $${p.inc}/s</div><div class="src">${esc(p.src)}</div></button>`).join("")
+    : `<div class="wempty" style="grid-column:1/-1">No pets match that search.</div>`;
+}
+
+/* =========================================================
+   Wiki pet → dream card
+   ========================================================= */
+function openWikiPetAsCard(wikiPet) {
+  // Pick a matching original pet for the artwork, based on rarity
+  const cardId = WIKI_TO_CARD[wikiPet.r] || "puddlepup";
+  const cardPet = PETS_LOOKUP[cardId] || PETS_LOOKUP.puddlepup;
+  st.cardPetId = cardPet.id;
+  st.cardPetName = wikiPet.name;      // show the WIKI pet's name on the card
+  st.cardPetRarity = cardPet.r;       // use the card pet's rarity for styling/sparks
+  st.cardPetCps = wikiPet.n;          // use the wiki pet's income
+  st.cardPetBio = cardPet.bio;
+  pcOpen();
+}
+
+/* =========================================================
+   Original pets (for the card art)
+   ========================================================= */
+const PETS = [
+  { id:"puddlepup",  name:"Puddlepup",  r:"Common",    cps:6,      bio:"Loves splashing in rain puddles." },
+  { id:"mossbun",    name:"Mossbun",    r:"Common",    cps:9,      bio:"Its ears are real leaves." },
+  { id:"mochimeow",  name:"Mochimeow",  r:"Common",    cps:14,     bio:"Squishy, sleepy, and purring." },
+  { id:"glimmerfin", name:"Glimmerfin", r:"Rare",      cps:55,     bio:"Swims through the air leaving glitter bubbles." },
+  { id:"shellbert",  name:"Shellbert",  r:"Rare",      cps:80,     bio:"Growing a tiny garden on its back." },
+  { id:"cinderkit",  name:"Cinderkit",  r:"Epic",      cps:320,    bio:"Its tail is a cozy campfire." },
+  { id:"snowhoot",   name:"Snowhoot",   r:"Epic",      cps:410,    bio:"Hoots tiny snowflakes when happy." },
+  { id:"starhorn",   name:"Starhorn",   r:"Legendary", cps:1800,   bio:"Said to grant one wish a day." },
+  { id:"buzzbolt",   name:"Buzzbolt",   r:"Legendary", cps:2600,   bio:"Makes honey that crackles with lightning." },
+  { id:"abyssa",     name:"Abyssa",     r:"Mythic",    cps:14000,  bio:"Glowing queen of the deep-sea jellies." },
+  { id:"emberwyrm",  name:"Emberwyrm",  r:"Mythic",    cps:21000,  bio:"A baby dragon that sneezes sparks." },
+  { id:"glitchbit",  name:"Glitchbit",  r:"Secret",    cps:250000, bio:"Nobody knows where it came from." },
+];
+const PETS_LOOKUP = Object.fromEntries(PETS.map(p => [p.id, p]));
+
+/* =========================================================
+   Events
+   ========================================================= */
+$("#userForm").addEventListener("submit", e => { e.preventDefault(); findPlayer($("#username").value); });
+
+$("#wtabs").addEventListener("click", e => { const b = e.target.closest("[data-wr]"); if (!b) return; wst.r = b.dataset.wr; wRenderTabs(); wRenderGrid(); });
+$("#wq").addEventListener("input", e => { wst.q = e.target.value; wRenderGrid(); });
+$("#wsrc").addEventListener("change", e => { wst.src = e.target.value; wRenderGrid(); });
+$("#wsort").addEventListener("change", e => { wst.sort = e.target.value; wRenderGrid(); });
+$("#wgrid").addEventListener("click", e => {
+  const b = e.target.closest("[data-wf]"); if (!b) return;
+  const p = WIKI_PETS.find(x => x.f === b.dataset.wf);
+  if (p) openWikiPetAsCard(p);
+});
+
+/* card modal buttons */
+$("#pcBtns").addEventListener("click", e => {
+  if (e.target.id === "pcContinue") pcToClaim();
+  else if (e.target.id === "pcClaim") pcClaim();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !$("#pcmodal").hidden) pcClose();
+});
+
+/* =========================================================
+   Init
+   ========================================================= */
+renderPlayer();
+wRenderTabs(); wRenderGrid();
+const saved = store.get("dei_user");
+if (saved && USER_RE.test(saved)) { $("#username").value = saved; findPlayer(saved); }
+
+})();
+</script>
+</body>
+</html>
