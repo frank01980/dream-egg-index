@@ -175,24 +175,42 @@ main.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:16p
 .wtab.on{background:var(--wrc,#ffd23a);color:#fff;-webkit-text-stroke:4px var(--ink);paint-order:stroke fill}
 .wcount{font-size:14px;color:#5b4d70;margin:0 0 12px}
 
-/* ===== Mobile fix: 1 card per row on phone, and overall smaller ===== */
+/* ============================================================
+   PET GRID — the main fix
+   ============================================================
+   Desktop: auto-fill columns (~170px each).
+   Mobile:  exactly 2 columns, cards scaled down so they stay
+            compact and balanced — not tall & skinny rectangles.
+*/
 .wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
-@media (max-width:640px){
-  .wgrid{grid-template-columns:1fr;gap:12px}
-  .wcard{flex-direction:row;align-items:center;text-align:left;gap:12px;padding:10px}
-  .wcard .pic{width:84px;height:84px;flex:none}
-  .wcard img{max-width:100%;max-height:100%}
-  .wcard .nm{font-size:17px;margin-top:0}
-  .wcard .inc{margin-top:4px;font-size:13px}
-  .wcard .src{margin-top:2px}
-  .wcard .wpill{margin-top:4px}
-  .wcard .info{display:flex;flex-direction:column;align-items:flex-start;min-width:0;flex:1}
+
+/* Tablet / small desktop: keep auto-fill, just tighter */
+@media (max-width:820px){
+  .wgrid{gap:12px}
 }
-@media (max-width:420px){
-  main.wrap{padding:10px}
-  .panel,.wpanel{padding:16px 12px}
-  .wcontrols{gap:8px}
-  .win{font-size:16px;padding:7px 10px}
+
+/* Phone: 2 columns always, everything scaled down proportionally */
+@media (max-width:640px){
+  .wgrid{grid-template-columns:repeat(2, minmax(0,1fr));gap:10px}
+  .wcard{padding:8px 6px 10px;border-radius:18px;border-width:3px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.08),0 4px 0 var(--ink)}
+  .wcard:hover{transform:none}
+  .wcard .pic{aspect-ratio:1/1;max-width:78px;margin:0 auto}
+  .wcard .nm{font-size:14px;margin-top:4px;line-height:1.05}
+  .wcard .inc{font-size:12px;margin-top:4px}
+  .wcard .src{font-size:10px;margin-top:2px;line-height:1.2}
+  .wcard .wpill{font-size:11px;padding:1px 9px 3px;-webkit-text-stroke:3px var(--ink);margin-top:4px;border-width:2.5px}
+  .wcount{font-size:13px}
+}
+
+/* Very small phones: keep 2 columns, just a touch smaller still */
+@media (max-width:380px){
+  .wgrid{gap:8px}
+  .wcard{padding:7px 5px 9px;border-radius:16px}
+  .wcard .pic{max-width:66px}
+  .wcard .nm{font-size:13px}
+  .wcard .inc{font-size:11px}
+  .wcard .src{font-size:9px}
+  .wcard .wpill{font-size:10px;padding:1px 7px 2px}
 }
 
 .wcard{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;overflow:hidden;
@@ -300,17 +318,12 @@ const fmt = n => {
 
 const AVATAR_PLACEHOLDER = `<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="22" y="14" width="56" height="56" rx="12" fill="#ffd23a" stroke="#2a1b3d" stroke-width="6"/><rect x="36" y="34" width="8" height="12" rx="3" fill="#2a1b3d"/><rect x="56" y="34" width="8" height="12" rx="3" fill="#2a1b3d"/><path d="M38 54 q12 9 24 0" fill="none" stroke="#2a1b3d" stroke-width="5" stroke-linecap="round"/><rect x="14" y="74" width="72" height="22" rx="10" fill="#3fa9ff" stroke="#2a1b3d" stroke-width="6"/></svg>`;
 
-/* ====== state ====== */
-const st = {
-  player: null,
-  pet: null,          // { name, r, incomeText, incomeNum, file }
-};
+const st = { player: null, pet: null };
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch {} },
 };
 
-/* ====== player lookup ====== */
 const USER_RE = /^[A-Za-z0-9_]{3,20}$/;
 function renderPlayer(mode = "idle", msg = "") {
   const out = $("#playerOut");
@@ -359,7 +372,6 @@ async function findPlayer(name) {
   }
 }
 
-/* ====== dream pet card ====== */
 function cardHTML(step) {
   const p = st.player;
   const ava = p ? `<img alt="" referrerpolicy="no-referrer" src="${esc(p.imageUrl)}">` : AVATAR_PLACEHOLDER;
@@ -419,7 +431,6 @@ function pcAdvance() {
   }
 }
 
-/* ====== wiki data ====== */
 function parseInc(s) { const m = String(s).match(/^([\d.]+)([KMBT]?)$/); return m ? +m[1] * ({ "":1, K:1e3, M:1e6, B:1e9, T:1e12 })[m[2]] : 0; }
 
 const WIKI_PETS = [
@@ -510,14 +521,11 @@ function wRenderGrid() {
   $("#wcount").textContent = `Showing ${l.length} of ${WIKI_PETS.length} pets`;
   $("#wgrid").innerHTML = l.length ? l.map(p => `<button class="wcard wr-${p.r}" type="button" data-wf="${p.f}" aria-label="Pick ${esc(p.name)}, ${p.r}">
       <div class="pic"><img src="img/${p.f}.webp" alt="${esc(p.name)}" loading="lazy" width="256" height="256"></div>
-      <div class="info">
-        <div class="nm">${esc(p.name)}</div><span class="wpill">${p.r}</span>
-        <div class="inc">💰 $${p.inc}/s</div><div class="src">${esc(p.src)}</div>
-      </div></button>`).join("")
+      <div class="nm">${esc(p.name)}</div><span class="wpill">${p.r}</span>
+      <div class="inc">💰 $${p.inc}/s</div><div class="src">${esc(p.src)}</div></button>`).join("")
     : `<div class="wempty" style="grid-column:1/-1">No pets match that search.</div>`;
 }
 
-/* ====== events ====== */
 $("#userForm").addEventListener("submit", e => { e.preventDefault(); findPlayer($("#username").value); });
 
 $("#wtabs").addEventListener("click", e => { const b = e.target.closest("[data-wr]"); if (!b) return; wst.r = b.dataset.wr; wRenderTabs(); wRenderGrid(); });
@@ -541,7 +549,6 @@ document.addEventListener("keydown", e => {
   if (e.key === "Escape" && !$("#pcmodal").hidden) pcClose();
 });
 
-/* ====== init ====== */
 renderPlayer();
 wRenderTabs(); wRenderGrid();
 const saved = store.get("dei_user");
