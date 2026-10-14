@@ -40,12 +40,27 @@ nav.top{position:relative;z-index:2;display:flex;justify-content:center;gap:10px
 .navbtn.on{background:linear-gradient(180deg,rgba(255,255,255,.35) 0 45%,transparent 46%),var(--yellow);box-shadow:inset 0 -5px 0 var(--yellow-d),0 5px 0 var(--ink)}
 .navbtn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
 
-.hero{position:relative;z-index:1;text-align:center;padding:22px 16px 6px}
-.hero h1{margin:0;font-family:'Lilita One';font-weight:400;font-size:clamp(40px,9vw,76px);line-height:.95;color:#fff;
-  -webkit-text-stroke:10px var(--ink);paint-order:stroke fill;text-shadow:0 7px 0 var(--ink);transform:rotate(-2deg)}
-.hero h1 span{display:inline-block;margin-top:8px;font-size:.55em;background:var(--pink);border:5px solid var(--ink);border-radius:18px;
-  padding:0 18px 6px;box-shadow:0 6px 0 var(--ink);-webkit-text-stroke:6px var(--ink);transform:rotate(3deg)}
-.hero p{margin:16px auto 0;max-width:620px;color:#fff;font-size:16px;text-shadow:0 2px 0 rgba(42,27,61,.6)}
+.hero{
+  position:relative;
+  z-index:1;
+  text-align:center;
+  padding:16px 16px 0;
+  margin:0;
+}
+.hero-logo{
+  display:block;
+  width:100%;
+  max-width:900px;        /* ← الحد الأقصى للعرض على الكمبيوتر */
+  height:auto;
+  margin:0 auto;
+  padding:0;
+}
+
+/* على الجوال — تصير أصغر عشان تناسب الشاشة */
+@media (max-width:640px){
+  .hero{padding:10px 10px 0}
+  .hero-logo{max-width:100%}   /* ← على الجوال تاخذ عرض الشاشة كامل */
+}
 
 .panel{background:#fff;border:5px solid var(--ink);border-radius:28px;box-shadow:0 8px 0 var(--ink);padding:22px 18px 18px;position:relative;min-width:0}
 .panel::after{content:"";position:absolute;left:14px;right:14px;top:8px;height:10px;border-radius:10px;background:rgba(255,255,255,.7);pointer-events:none}
@@ -303,6 +318,7 @@ footer{position:relative;z-index:1;max-width:900px;margin:10px auto 0;padding:16
 
 <header class="hero">
   <img src="https://i.postimg.cc/ZqLvj48V/Gemini-Generated-Image-nxyuonnxyuonnxyu-removebg-preview.png" alt="Steal An Egg — All Eggs" class="hero-logo">
+
   <p>Search your Roblox username, then click any pet below to build your Dream Pet Card.</p>
 </header>
 
