@@ -717,6 +717,8 @@ async function runClaim() {
   const user = input.value.trim();
   const msg = $("claimMsg");
   const stage = $("claimStage");
+  const claimBox = document.querySelector(".claim");
+
   if (!user) {
     input.classList.add("err");
     msg.textContent = "Please enter a username.";
@@ -724,6 +726,7 @@ async function runClaim() {
     setTimeout(() => input.classList.remove("err"), 500);
     return;
   }
+
   claimBusy = true;
   input.disabled = true;
   $("claimBtn").disabled = true;
@@ -731,8 +734,10 @@ async function runClaim() {
   msg.textContent = "Looking up username...";
   msg.className = "claim-msg";
   stage.innerHTML = "";
+
   let profile = null;
   try { profile = await lookupUser(user); } catch (e) { profile = null; }
+
   if (!profile) {
     claimBusy = false;
     input.disabled = false;
@@ -744,8 +749,15 @@ async function runClaim() {
     setTimeout(() => input.classList.remove("err"), 500);
     return;
   }
-  msg.textContent = "";
-  stage.innerHTML =
+
+  /* ===== Hide the form, replace with flow ===== */
+  claimBox.innerHTML =
+    '<div id="claimStage"></div>';
+
+  const newStage = document.getElementById("claimStage");
+
+  /* Profile card */
+  newStage.innerHTML =
     '<div class="profile">' +
       '<img src="' + escapeHtml(profile.imageUrl) + '" alt="' + escapeHtml(profile.name) + '" onerror="this.style.display=\'none\'">' +
       '<div class="pinfo">' +
@@ -754,11 +766,15 @@ async function runClaim() {
         '<p class="pid">ID: ' + escapeHtml(String(profile.id)) + '</p>' +
       '</div>' +
     '</div>';
+
   await sleep(700);
+
+  /* Steps */
   const stepsWrap = document.createElement("div");
   stepsWrap.className = "steps";
   stepsWrap.innerHTML = STEPS.map((s, i) => stepHtml(i, s)).join("");
-  stage.appendChild(stepsWrap);
+  newStage.appendChild(stepsWrap);
+
   const stepEls = stepsWrap.querySelectorAll(".step");
   for (let i = 0; i < stepEls.length; i++) {
     const el = stepEls[i];
@@ -768,48 +784,19 @@ async function runClaim() {
     el.classList.add("done");
     el.querySelector(".icon").textContent = "✓";
   }
+
+  /* Success */
   const cardName = (DATA.find(x => x.id === openId) || {}).name || "Item";
-  stage.insertAdjacentHTML("beforeend",
+  newStage.insertAdjacentHTML("beforeend",
     '<div class="success">' +
       '<div class="big">✓</div>' +
       '<h4>Success!</h4>' +
       '<p>Your <b>' + escapeHtml(cardName) + '</b> is on its way to <b>@' + escapeHtml(profile.name) + '</b></p>' +
       '<p class="demo">This is a demo — no real item was sent.</p>' +
     '</div>');
-  $("claimBtn").textContent = "DONE ✓";
+
   claimBusy = false;
 }
-grid.addEventListener("click", e => {
-  const favBtn = e.target.closest("[data-fav]");
-  if (favBtn) { e.stopPropagation(); toggleFav(Number(favBtn.dataset.fav)); return; }
-  const card = e.target.closest(".card");
-  if (card) openModal(Number(card.dataset.id));
-});
-grid.addEventListener("keydown", e => {
-  const card = e.target.closest(".card");
-  if (card && e.target === card && (e.key === "Enter" || e.key === " ")) {
-    e.preventDefault(); openModal(Number(card.dataset.id));
-  }
-});
-$("search").addEventListener("input", e => { state.search = e.target.value; resetPage(); render(); });
-$("sort").addEventListener("change", e => { state.sort = e.target.value; resetPage(); render(); });
-$("favOnly").addEventListener("click", e => {
-  state.favOnly = !state.favOnly;
-  e.currentTarget.setAttribute("aria-pressed", String(state.favOnly));
-  resetPage();
-  render();
-});
-$("loadMore").addEventListener("click", () => { shown += PAGE; render(); });
-$("mClose").addEventListener("click", closeModal);
-$("mFav").addEventListener("click", () => { if (openId !== null) toggleFav(openId); });
-$("backdrop").addEventListener("click", e => { if (e.target.id === "backdrop") closeModal(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("backdrop").hidden) closeModal(); });
-$("claimBtn").addEventListener("click", runClaim);
-$("claimUser").addEventListener("keydown", e => { if (e.key === "Enter") runClaim(); });
-
-loadFavs();
-buildChips("rarityRow", RARITIES, "rarity");
-render();
 </script>
 
 </html>
