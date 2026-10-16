@@ -326,7 +326,7 @@ select {
       </dl>
       <button class="modal-fav" id="mFav" aria-pressed="false">♡ Add to favorites</button>
 
-      <div class="claim">
+      <div class="claim" id="claimBox">
         <h3>Claim This Item</h3>
         <p class="hint">Enter your username to receive this item.</p>
         <div class="claim-row">
@@ -334,17 +334,12 @@ select {
           <button class="go" id="claimBtn">CLAIM NOW</button>
         </div>
         <p class="claim-msg" id="claimMsg"></p>
-        <div id="claimStage"></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-/* =========================================================
-   DATA — 200+ pets
-   Rarity auto-generated from name.
-   ========================================================= */
 const DATA = [
   { id: 1, name: "67", rarity: "Common", power: 27, image: "img/67.webp", description: "A mysterious numbered creature.", favorite: false },
   { id: 2, name: "Abyss Overlord", rarity: "Divine", power: 96, image: "img/Abyss Overlord.webp", description: "A powerful divine being from the abyss.", favorite: false },
@@ -368,7 +363,7 @@ const DATA = [
   { id: 20, name: "Catfish", rarity: "Uncommon", power: 44, image: "img/Catfish.png", description: "A bottom-feeding catfish.", favorite: false },
   { id: 21, name: "Centapede", rarity: "Uncommon", power: 48, image: "img/Centapede.png", description: "A many-legged centipede.", favorite: false },
   { id: 22, name: "Centaur", rarity: "Epic", power: 75, image: "img/Centaur.webp", description: "A half-human half-horse being.", favorite: false },
-  { id: 23, name: "Cerberus", rarity: "Mythic", power: 89, image: "img/Cerberus.webp", description: "The three-headed guardian of the underworld.", favorite: false },
+  { id: 23, name: "Cerberus", rarity: "Mythic", power: 89, image: "img/Cerberus.webp", description: "The three-headed guardian.", favorite: false },
   { id: 24, name: "Chicken", rarity: "Common", power: 22, image: "img/Chicken.png", description: "A basic farm chicken.", favorite: false },
   { id: 25, name: "Chillin Chilli", rarity: "Uncommon", power: 47, image: "img/Chillin Chilli.png", description: "A cool spicy pepper creature.", favorite: false },
   { id: 26, name: "Chimpanzee", rarity: "Rare", power: 61, image: "img/Chimpanzee.png", description: "A clever primate.", favorite: false },
@@ -679,6 +674,7 @@ function closeModal() {
   openId = null;
   if (lastFocus) lastFocus.focus();
 }
+
 const STEPS = [
   { key: "search",  label: "Searching for account..." },
   { key: "verify",  label: "Verifying user..." },
@@ -686,16 +682,21 @@ const STEPS = [
   { key: "deliver", label: "Delivering..." }
 ];
 let claimBusy = false;
+
 function resetClaim() {
   claimBusy = false;
-  $("claimUser").value = "";
-  $("claimUser").classList.remove("err");
-  $("claimUser").disabled = false;
-  $("claimBtn").disabled = false;
-  $("claimBtn").textContent = "CLAIM NOW";
-  $("claimMsg").textContent = "";
-  $("claimMsg").className = "claim-msg";
-  $("claimStage").innerHTML = "";
+  const box = $("claimBox");
+  if (!box) return;
+  box.innerHTML =
+    '<h3>Claim This Item</h3>' +
+    '<p class="hint">Enter your username to receive this item.</p>' +
+    '<div class="claim-row">' +
+      '<input id="claimUser" type="text" placeholder="Your username" autocomplete="off" spellcheck="false">' +
+      '<button class="go" id="claimBtn">CLAIM NOW</button>' +
+    '</div>' +
+    '<p class="claim-msg" id="claimMsg"></p>';
+  $("claimBtn").addEventListener("click", runClaim);
+  $("claimUser").addEventListener("keydown", e => { if (e.key === "Enter") runClaim(); });
 }
 function stepHtml(i, st) {
   return '<div class="step" data-step="' + st.key + '">' +
@@ -703,6 +704,7 @@ function stepHtml(i, st) {
          '<span class="txt">' + st.label + '</span></div>';
 }
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
 async function lookupUser(username) {
   const url = API_BASE + "?username=" + encodeURIComponent(username);
   const r = await fetch(url, { headers: { Accept: "application/json" } });
@@ -711,12 +713,14 @@ async function lookupUser(username) {
   if (!j || !j.id) return null;
   return j;
 }
+
 async function runClaim() {
   if (claimBusy) return;
   const input = $("claimUser");
   const user = input.value.trim();
   const msg = $("claimMsg");
-  const stage = $("claimStage");
+  const box = $("claimBox");
+
   if (!user) {
     input.classList.add("err");
     msg.textContent = "Please enter a username.";
@@ -724,15 +728,17 @@ async function runClaim() {
     setTimeout(() => input.classList.remove("err"), 500);
     return;
   }
+
   claimBusy = true;
   input.disabled = true;
   $("claimBtn").disabled = true;
   $("claimBtn").textContent = "WORKING...";
   msg.textContent = "Looking up username...";
   msg.className = "claim-msg";
-  stage.innerHTML = "";
+
   let profile = null;
   try { profile = await lookupUser(user); } catch (e) { profile = null; }
+
   if (!profile) {
     claimBusy = false;
     input.disabled = false;
@@ -744,7 +750,11 @@ async function runClaim() {
     setTimeout(() => input.classList.remove("err"), 500);
     return;
   }
-  msg.textContent = "";
+
+  /* Replace the form with the flow */
+  box.innerHTML = '<div id="claimStage"></div>';
+  const stage = $("claimStage");
+
   stage.innerHTML =
     '<div class="profile">' +
       '<img src="' + escapeHtml(profile.imageUrl) + '" alt="' + escapeHtml(profile.name) + '" onerror="this.style.display=\'none\'">' +
@@ -754,11 +764,14 @@ async function runClaim() {
         '<p class="pid">ID: ' + escapeHtml(String(profile.id)) + '</p>' +
       '</div>' +
     '</div>';
+
   await sleep(700);
+
   const stepsWrap = document.createElement("div");
   stepsWrap.className = "steps";
   stepsWrap.innerHTML = STEPS.map((s, i) => stepHtml(i, s)).join("");
   stage.appendChild(stepsWrap);
+
   const stepEls = stepsWrap.querySelectorAll(".step");
   for (let i = 0; i < stepEls.length; i++) {
     const el = stepEls[i];
@@ -768,6 +781,7 @@ async function runClaim() {
     el.classList.add("done");
     el.querySelector(".icon").textContent = "✓";
   }
+
   const cardName = (DATA.find(x => x.id === openId) || {}).name || "Item";
   stage.insertAdjacentHTML("beforeend",
     '<div class="success">' +
@@ -776,9 +790,10 @@ async function runClaim() {
       '<p>Your <b>' + escapeHtml(cardName) + '</b> is on its way to <b>@' + escapeHtml(profile.name) + '</b></p>' +
       '<p class="demo">This is a demo — no real item was sent.</p>' +
     '</div>');
-  $("claimBtn").textContent = "DONE ✓";
+
   claimBusy = false;
 }
+
 grid.addEventListener("click", e => {
   const favBtn = e.target.closest("[data-fav]");
   if (favBtn) { e.stopPropagation(); toggleFav(Number(favBtn.dataset.fav)); return; }
@@ -804,11 +819,10 @@ $("mClose").addEventListener("click", closeModal);
 $("mFav").addEventListener("click", () => { if (openId !== null) toggleFav(openId); });
 $("backdrop").addEventListener("click", e => { if (e.target.id === "backdrop") closeModal(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("backdrop").hidden) closeModal(); });
-$("claimBtn").addEventListener("click", runClaim);
-$("claimUser").addEventListener("keydown", e => { if (e.key === "Enter") runClaim(); });
 
 loadFavs();
 buildChips("rarityRow", RARITIES, "rarity");
+resetClaim();
 render();
 </script>
 
