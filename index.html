@@ -166,6 +166,8 @@ select {
 }
 .fav[aria-pressed="true"] { color: var(--heart); background: #fff; }
 .empty { margin-top: 40px; text-align: center; color: var(--muted); }
+
+/* ============ MODAL FIXES ============ */
 .backdrop {
   position: fixed; inset: 0; z-index: 20; background: rgb(8 9 16 / .6);
   display: grid; place-items: center;
@@ -174,11 +176,27 @@ select {
 }
 .modal {
   background: var(--surface); color: var(--ink); border-radius: 14px;
-  width: min(720px, 100%); max-height: 100%; overflow: auto;
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; padding: 20px;
+  width: min(720px, 100%); max-height: 90vh; overflow-y: auto;
+  display: flex; flex-direction: row; gap: 20px; padding: 20px;
   position: relative;
 }
-.modal .frame { border: 2px solid var(--line); }
+.modal .frame { 
+  flex: 1 1 50%;
+  border: 2px solid var(--line); 
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  background: #12131c;
+}
+.modal .frame img { 
+  width: 100%; height: 100%; object-fit: contain; display: block; 
+}
+#mRight {
+  flex: 1 1 50%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
 .modal h2 { font-family: var(--font-display); font-size: 1.7rem; margin: 0; }
 .modal .desc { color: var(--muted); margin: 10px 0 16px; }
 .stats { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; }
@@ -198,20 +216,23 @@ select {
 .modal-fav {
   margin-top: 18px; font: inherit; font-weight: 600; padding: 9px 14px; border-radius: 8px; cursor: pointer;
   border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  align-self: flex-start;
 }
 .modal-fav[aria-pressed="true"] { color: var(--heart); border-color: var(--heart); }
+
+/* ===== CLAIM FLOW (FORM FIX) ===== */
 .claim { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
 .claim h3 { font-family: var(--font-display); font-size: .95rem; font-weight: 700; margin: 0 0 4px; text-transform: uppercase; letter-spacing: .08em; }
 .claim .hint { font-size: 12px; color: var(--muted); margin: 0 0 12px; }
 .claim-row { 
   display: flex; 
   gap: 8px; 
-  flex-wrap: nowrap; /* منع النزول لسطر جديد */
+  flex-wrap: nowrap; 
   width: 100%;
 }
 .claim input {
-  flex: 1 1 auto; /* يأخذ المساحة المتبقية */
-  min-width: 0; /* مهم جداً لمنع التمدد الزائد */
+  flex: 1 1 0%; /* يسمح للحقل بالانكماش لأخذ المساحة المتاحة */
+  min-width: 0;
   padding: 10px 12px; 
   font: inherit; 
   color: var(--ink);
@@ -220,19 +241,23 @@ select {
   border-radius: 8px;
 }
 .claim button.go {
-  flex: 0 0 auto; /* الزر لا يتمدد ولا ينكمش */
-  font: inherit; 
-  font-weight: 700; 
-  font-size: 13px; 
-  letter-spacing: .06em;
-  padding: 10px 20px; 
-  border-radius: 999px; 
-  cursor: pointer; 
-  border: none;
-  background: var(--ok); 
-  color: #fff;
-  white-space: nowrap; /* منع النص من النزول لسطرين */
+  flex: 0 0 auto; 
+  font: inherit; font-weight: 700; font-size: 13px; letter-spacing: .06em;
+  padding: 10px 20px; border-radius: 999px; cursor: pointer; border: none;
+  background: var(--ok); color: #fff;
+  white-space: nowrap;
 }
+.claim button.go:hover { filter: brightness(1.08); }
+.claim button.go:disabled { opacity: .55; cursor: not-allowed; }
+.claim input.err { border-color: var(--heart); animation: shake .3s; }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+.claim-msg { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+.claim-msg.err { color: var(--heart); }
+
 .profile {
   display: flex; gap: 12px; align-items: center;
   margin-top: 4px; padding: 12px;
@@ -281,8 +306,21 @@ select {
 .success h4 { font-family: var(--font-display); font-size: 1.1rem; margin: 0 0 6px; }
 .success p { margin: 0; font-size: 13px; color: var(--muted); }
 .success .demo { margin-top: 8px; font-size: 11px; opacity: .7; }
+
+/* ============ MOBILE FIXES ============ */
 @media (max-width: 560px) {
-  .modal { grid-template-columns: 1fr; }
+  .modal { 
+    flex-direction: column; 
+    padding: 16px; 
+    gap: 16px; 
+    max-height: 85vh;
+  }
+  .modal .frame { 
+    flex: none; 
+    width: 100%; 
+    aspect-ratio: 1/1; 
+    max-height: 40vh;
+  }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .profile img { width: 60px; height: 60px; }
 }
@@ -640,11 +678,7 @@ let lastFocus = null;
 
 function fillModal(c) {
   $("mFrame").innerHTML = imageHtml(c);
-  
-  // 1. إعادة بناء العمود الأيمن أولاً
-  resetClaim(); 
-  
-  // 2. ثم تعبئة البيانات
+  resetClaim();
   $("mTitle").textContent = c.name;
   $("mDesc").textContent = c.description;
   $("mRarity").textContent = c.rarity;
@@ -677,7 +711,6 @@ const STEPS = [
 ];
 let claimBusy = false;
 
-/* Reset the right column back to its default state */
 function resetClaim() {
   claimBusy = false;
   const right = $("mRight");
@@ -758,7 +791,6 @@ async function runClaim() {
     return;
   }
 
-  /* ===== Replace the ENTIRE right column with the flow ===== */
   right.innerHTML = '<div id="claimStage"></div>';
   const stage = $("claimStage");
 
