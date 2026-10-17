@@ -203,27 +203,36 @@ select {
 .claim { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
 .claim h3 { font-family: var(--font-display); font-size: .95rem; font-weight: 700; margin: 0 0 4px; text-transform: uppercase; letter-spacing: .08em; }
 .claim .hint { font-size: 12px; color: var(--muted); margin: 0 0 12px; }
-.claim-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.claim input {
-  flex: 1 1 180px; min-width: 0;
-  padding: 10px 12px; font: inherit; color: var(--ink);
-  background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+.claim-row { 
+  display: flex; 
+  gap: 8px; 
+  flex-wrap: nowrap; /* منع النزول لسطر جديد */
+  width: 100%;
 }
-.claim input.err { border-color: var(--heart); animation: shake .3s; }
-@keyframes shake {
-  0%,100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+.claim input {
+  flex: 1 1 auto; /* يأخذ المساحة المتبقية */
+  min-width: 0; /* مهم جداً لمنع التمدد الزائد */
+  padding: 10px 12px; 
+  font: inherit; 
+  color: var(--ink);
+  background: var(--bg); 
+  border: 1px solid var(--line); 
+  border-radius: 8px;
 }
 .claim button.go {
-  font: inherit; font-weight: 700; font-size: 13px; letter-spacing: .06em;
-  padding: 10px 22px; border-radius: 999px; cursor: pointer; border: none;
-  background: var(--ok); color: #fff;
+  flex: 0 0 auto; /* الزر لا يتمدد ولا ينكمش */
+  font: inherit; 
+  font-weight: 700; 
+  font-size: 13px; 
+  letter-spacing: .06em;
+  padding: 10px 20px; 
+  border-radius: 999px; 
+  cursor: pointer; 
+  border: none;
+  background: var(--ok); 
+  color: #fff;
+  white-space: nowrap; /* منع النص من النزول لسطرين */
 }
-.claim button.go:hover { filter: brightness(1.08); }
-.claim button.go:disabled { opacity: .55; cursor: not-allowed; }
-.claim-msg { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
-.claim-msg.err { color: var(--heart); }
 .profile {
   display: flex; gap: 12px; align-items: center;
   margin-top: 4px; padding: 12px;
@@ -631,7 +640,11 @@ let lastFocus = null;
 
 function fillModal(c) {
   $("mFrame").innerHTML = imageHtml(c);
-  resetClaim();
+  
+  // 1. إعادة بناء العمود الأيمن أولاً
+  resetClaim(); 
+  
+  // 2. ثم تعبئة البيانات
   $("mTitle").textContent = c.name;
   $("mDesc").textContent = c.description;
   $("mRarity").textContent = c.rarity;
