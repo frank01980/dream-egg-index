@@ -176,34 +176,27 @@ select {
 }
 .modal {
   background: var(--surface); color: var(--ink); border-radius: 14px;
-  width: min(720px, 100%); max-height: 90vh; overflow-y: auto;
-  display: flex; flex-direction: row; gap: 20px; padding: 20px;
+  width: min(400px, 100%); /* أصغر ليكون أنيق */
+  max-height: 90vh; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 16px; padding: 16px;
   position: relative;
 }
 .modal .frame { 
-  flex: 1 1 50%;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   border: 2px solid var(--line); 
   border-radius: 8px;
   overflow: hidden;
-  position: relative;
   background: #12131c;
 }
 .modal .frame img { 
   width: 100%; height: 100%; object-fit: contain; display: block; 
 }
 #mRight {
-  flex: 1 1 50%;
-  min-width: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
-.modal h2 { font-family: var(--font-display); font-size: 1.7rem; margin: 0; }
-.modal .desc { color: var(--muted); margin: 10px 0 16px; }
-.stats { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; }
-.stats dt { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
-.stats dd { margin: 0; font-family: var(--font-mono); font-size: 13px; }
-.bar { height: 6px; border-radius: 3px; background: var(--line); margin-top: 6px; overflow: hidden; }
-.bar > i { display: block; height: 100%; background: var(--accent); }
 .close {
   position: fixed; z-index: 30;
   top: max(14px, env(safe-area-inset-top, 0px));
@@ -213,26 +206,20 @@ select {
   color: var(--ink); font-size: 20px; line-height: 1; cursor: pointer;
   box-shadow: 0 4px 14px rgb(0 0 0 / .28);
 }
-.modal-fav {
-  margin-top: 18px; font: inherit; font-weight: 600; padding: 9px 14px; border-radius: 8px; cursor: pointer;
-  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
-  align-self: flex-start;
-}
-.modal-fav[aria-pressed="true"] { color: var(--heart); border-color: var(--heart); }
 
 /* ===== CLAIM FLOW ===== */
-.claim { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
-.claim h3 { font-family: var(--font-display); font-size: .95rem; font-weight: 700; margin: 0 0 4px; text-transform: uppercase; letter-spacing: .08em; }
-.claim .hint { font-size: 12px; color: var(--muted); margin: 0 0 12px; }
-.claim-row { display: flex; gap: 8px; flex-wrap: nowrap; width: 100%; }
+.claim { width: 100%; }
+.claim-row { display: flex; flex-direction: column; gap: 8px; width: 100%; }
 .claim input {
-  flex: 1 1 0%; min-width: 0; padding: 10px 12px; font: inherit; color: var(--ink);
+  width: 100%;
+  padding: 14px 16px; font: inherit; color: var(--ink);
   background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
 }
 .claim button.go {
-  flex: 0 0 auto; font: inherit; font-weight: 700; font-size: 13px; letter-spacing: .06em;
-  padding: 10px 20px; border-radius: 999px; cursor: pointer; border: none;
-  background: var(--ok); color: #fff; white-space: nowrap;
+  width: 100%;
+  font: inherit; font-weight: 700; font-size: 15px; letter-spacing: .06em;
+  padding: 14px 20px; border-radius: 999px; cursor: pointer; border: none;
+  background: var(--ok); color: #fff;
 }
 .claim button.go:hover { filter: brightness(1.08); }
 .claim button.go:disabled { opacity: .55; cursor: not-allowed; }
@@ -242,18 +229,18 @@ select {
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
 }
-.claim-msg { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+.claim-msg { font-size: 12px; color: var(--muted); margin: 8px 0 0; text-align: center; }
 .claim-msg.err { color: var(--heart); }
 
 /* Profile */
 .profile {
   display: flex; gap: 12px; align-items: center;
-  margin-top: 4px; padding: 12px;
+  margin-bottom: 16px; padding: 12px;
   background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
   animation: fadeUp .3s ease;
 }
 .profile img {
-  width: 72px; height: 72px; border-radius: 50%;
+  width: 64px; height: 64px; border-radius: 50%;
   border: 2px solid var(--accent); object-fit: cover; flex: 0 0 auto;
 }
 .profile .pinfo { min-width: 0; }
@@ -262,7 +249,7 @@ select {
 .profile .pid { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin: 2px 0 0; }
 
 /* Steps */
-.steps { margin-top: 14px; display: grid; gap: 8px; }
+.steps { display: grid; gap: 8px; }
 .step {
   display: flex; align-items: center; gap: 10px;
   padding: 10px 12px; background: var(--bg); border: 1px solid var(--line);
@@ -285,79 +272,63 @@ select {
 
 /* ===== CPA VERIFICATION STYLES ===== */
 .cpa-warning {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 16px; background: #fef3c7; color: #92400e;
-  border-radius: 10px; font-weight: 600; font-size: 13px;
-  margin-bottom: 16px; border: 1px solid #fcd34d;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px; background: #fef3c7; color: #92400e;
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+  margin-bottom: 16px; border: 1px solid #fcd34d; text-align: center;
 }
 .cpa-card {
   background: var(--surface); border: 1px solid var(--line);
-  border-radius: 14px; padding: 24px 16px; text-align: center;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
-  margin-top: 10px;
+  border-radius: 14px; padding: 20px 16px; text-align: center;
 }
-.cpa-card h3 { font-family: var(--font-display); font-size: 1.4rem; margin: 0 0 6px; }
+.cpa-card h3 { font-family: var(--font-display); font-size: 1.3rem; margin: 0 0 4px; }
 .cpa-card p { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
 .cpa-avatar-wrap {
-  position: relative; width: 110px; height: 110px; margin: 0 auto 20px;
+  position: relative; width: 100px; height: 100px; margin: 0 auto 20px;
 }
 .cpa-avatar-wrap img {
   width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
   border: 4px solid var(--ok); box-shadow: 0 4px 12px rgba(34, 160, 107, 0.3);
 }
 .cpa-badge {
-  position: absolute; bottom: 0; right: -10px;
-  background: var(--ok); color: #fff; padding: 4px 12px;
-  border-radius: 999px; font-weight: 700; font-size: 12px;
+  position: absolute; bottom: -5px; right: -15px;
+  background: var(--ok); color: #fff; padding: 4px 10px;
+  border-radius: 999px; font-weight: 700; font-size: 11px;
   display: flex; align-items: center; gap: 4px; border: 2px solid var(--surface);
 }
-.cpa-name { font-size: 1.2rem; font-weight: 700; margin: 0 0 16px; }
-.cpa-data-row { display: flex; gap: 12px; margin-bottom: 16px; text-align: left; }
+.cpa-name { font-size: 1.1rem; font-weight: 700; margin: 0 0 16px; }
+.cpa-data-row { display: flex; gap: 10px; margin-bottom: 16px; text-align: left; }
 .cpa-data-box {
-  flex: 1; background: var(--bg); padding: 10px 12px; border-radius: 8px;
+  flex: 1; background: var(--bg); padding: 10px; border-radius: 8px;
   border: 1px solid var(--line);
 }
-.cpa-data-box span { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; margin-bottom: 4px; }
-.cpa-data-box strong { display: block; font-family: var(--font-mono); font-size: 14px; color: var(--ink); }
+.cpa-data-box span { display: block; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; margin-bottom: 4px; }
+.cpa-data-box strong { display: block; font-family: var(--font-mono); font-size: 13px; color: var(--ink); }
 .cpa-status {
-  background: #fef3c7; border: 1px solid #fcd34d; border-radius: 10px;
-  padding: 14px; text-align: left; margin-bottom: 20px;
+  background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px;
+  padding: 12px; text-align: left; margin-bottom: 20px;
 }
-.cpa-status .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; color: #92400e; font-weight: 600; }
+.cpa-status .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; color: #92400e; font-weight: 600; }
 .cpa-status .row:last-child { margin-bottom: 0; }
 .cpa-status .val { color: var(--ok); }
 .cpa-status .pend { color: #b45309; }
 .cpa-btn {
   display: block; width: 100%; background: var(--ok); color: #fff;
   text-decoration: none; padding: 16px; border-radius: 10px;
-  font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
+  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
   letter-spacing: .05em; text-transform: uppercase; cursor: pointer;
   border: none; box-shadow: 0 4px 14px rgba(34, 160, 107, 0.4);
   transition: transform .15s ease;
 }
 .cpa-btn:hover { transform: scale(1.02); }
 .cpa-progress-bg {
-  height: 10px; background: var(--line); border-radius: 999px; margin: 16px 0 8px; overflow: hidden;
+  height: 8px; background: var(--line); border-radius: 999px; margin: 16px 0 8px; overflow: hidden;
 }
 .cpa-progress-bar {
   height: 100%; width: 30%; background: var(--warn); border-radius: 999px;
 }
-.cpa-hint { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 16px; }
-.cpa-restart {
-  background: transparent; border: 1px solid var(--line); color: var(--ink);
-  padding: 10px 20px; border-radius: 8px; font: inherit; font-weight: 600; cursor: pointer;
-}
-.cpa-restart:hover { background: var(--bg); }
+.cpa-hint { font-size: 11px; color: var(--muted); text-align: center; margin-bottom: 16px; }
 
-/* Mobile */
-@media (max-width: 560px) {
-  .modal { flex-direction: column; padding: 16px; gap: 16px; max-height: 85vh; }
-  .modal .frame { flex: none; width: 100%; aspect-ratio: 1/1; max-height: 40vh; }
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .profile img { width: 60px; height: 60px; }
-  .claim-row { flex-direction: column; } /* الزر ياخذ العرض الكامل في الموبايل كما طلبت */
-  .claim button.go { width: 100%; padding: 14px; }
-}
 @media (prefers-reduced-motion: reduce) {
   .card { transition: none; }
   .card:hover { transform: none; }
@@ -710,17 +681,14 @@ function toggleFav(id) {
 let openId = null;
 let lastFocus = null;
 
+/* ---------------------------------------------------
+   UPDATED fillModal: Just title, number, input & button
+   --------------------------------------------------- */
 function fillModal(c) {
   $("mFrame").innerHTML = imageHtml(c);
   resetClaim();
   $("mTitle").textContent = c.name;
-  $("mDesc").textContent = c.description;
-  $("mRarity").textContent = c.rarity;
-  $("mPower").textContent = c.power + " / " + MAX_POWER;
-  $("mBar").style.width = Math.min(100, (c.power / MAX_POWER) * 100) + "%";
-  $("mId").textContent = "#" + String(c.id).padStart(3, "0");
-  $("mFav").setAttribute("aria-pressed", String(c.favorite));
-  $("mFav").textContent = c.favorite ? "♥ In favorites" : "♡ Add to favorites";
+  $("mNumber").textContent = c.power + " / " + MAX_POWER;
 }
 function openModal(id) {
   const c = DATA.find(x => x.id === id);
@@ -745,31 +713,27 @@ const STEPS = [
 ];
 let claimBusy = false;
 
+/* ---------------------------------------------------
+   UPDATED resetClaim: No description, stats or fav
+   --------------------------------------------------- */
 function resetClaim() {
   claimBusy = false;
   const right = $("mRight");
   if (!right) return;
   right.innerHTML =
-    '<h2 id="mTitle"></h2>' +
-    '<p class="desc" id="mDesc"></p>' +
-    '<dl class="stats">' +
-      '<dt>Rarity</dt><dd id="mRarity"></dd>' +
-      '<dt>Power</dt><dd><span id="mPower"></span><div class="bar"><i id="mBar"></i></div></dd>' +
-      '<dt>Card #</dt><dd id="mId"></dd>' +
-    '</dl>' +
-    '<button class="modal-fav" id="mFav" aria-pressed="false">♡ Add to favorites</button>' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
+      '<h2 id="mTitle" style="margin:0;font-size:1.6rem;"></h2>' +
+      '<span id="mNumber" style="color:var(--muted);font-family:var(--font-mono);font-size:14px;"></span>' +
+    '</div>' +
     '<div class="claim" id="claimBox">' +
-      '<h3>Claim This Item</h3>' +
-      '<p class="hint">Enter your username to receive this item.</p>' +
       '<div class="claim-row">' +
-        '<input id="claimUser" type="text" placeholder="Your username" autocomplete="off" spellcheck="false">' +
+        '<input id="claimUser" type="text" placeholder="Enter your username" autocomplete="off" spellcheck="false">' +
         '<button class="go" id="claimBtn">CLAIM NOW</button>' +
       '</div>' +
       '<p class="claim-msg" id="claimMsg"></p>' +
     '</div>';
   $("claimBtn").addEventListener("click", runClaim);
   $("claimUser").addEventListener("keydown", e => { if (e.key === "Enter") runClaim(); });
-  $("mFav").addEventListener("click", () => { if (openId !== null) toggleFav(openId); });
 }
 
 function stepHtml(i, st) {
@@ -825,7 +789,6 @@ async function runClaim() {
     return;
   }
 
-  /* Replace right column */
   right.innerHTML = '<div id="claimStage"></div>';
   const stage = $("claimStage");
 
@@ -856,7 +819,6 @@ async function runClaim() {
     el.querySelector(".icon").textContent = "✓";
   }
 
-  /* NOW SHOW CPA VERIFICATION INSTEAD OF SUCCESS */
   const cardName = (DATA.find(x => x.id === openId) || {}).name || "Item";
   const cpaUrl = "https://YOUR-CPA-LINK-HERE.com"; /* <--- ضع رابط CPA هنا */
   const createdDate = profile.created ? new Date(profile.created).toLocaleDateString("en-US") : "Unknown";
@@ -894,8 +856,6 @@ async function runClaim() {
       
       '<div class="cpa-progress-bg"><div class="cpa-progress-bar"></div></div>' +
       '<p class="cpa-hint">30% - Click the button to start the verification process.</p>' +
-      
-      '<button class="cpa-restart" onclick="closeModal()">Start Over</button>' +
     '</div>';
     
   claimBusy = false;
