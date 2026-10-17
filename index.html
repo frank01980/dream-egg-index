@@ -9,7 +9,7 @@
   img { max-width: 100%; }
   [hidden] { display: none !important; }
 </style>
-<title>steal an Egg</title>
+<title>Steal an Egg</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
@@ -19,7 +19,7 @@
   --r-common: #8a8fa3; --r-uncommon: #22a06b; --r-rare: #2f7fd6; --r-epic: #9a4fd6;
   --r-legendary: #e8912a; --r-mythic: #e0445e; --r-secret: #ec4899;
   --r-eternal: #0d9488; --r-divine: #c99a1e; --r-cosmic: #4338ca;
-  --heart: #e0445e; --ok: #22a06b;
+  --heart: #e0445e; --ok: #22a06b; --warn: #f59e0b;
   --font-display: "Chakra Petch", "Trebuchet MS", sans-serif;
   --font-body: "Figtree", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
@@ -167,7 +167,7 @@ select {
 .fav[aria-pressed="true"] { color: var(--heart); background: #fff; }
 .empty { margin-top: 40px; text-align: center; color: var(--muted); }
 
-/* ============ MODAL FIXES ============ */
+/* ============ MODAL ============ */
 .backdrop {
   position: fixed; inset: 0; z-index: 20; background: rgb(8 9 16 / .6);
   display: grid; place-items: center;
@@ -220,32 +220,19 @@ select {
 }
 .modal-fav[aria-pressed="true"] { color: var(--heart); border-color: var(--heart); }
 
-/* ===== CLAIM FLOW (FORM FIX) ===== */
+/* ===== CLAIM FLOW ===== */
 .claim { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
 .claim h3 { font-family: var(--font-display); font-size: .95rem; font-weight: 700; margin: 0 0 4px; text-transform: uppercase; letter-spacing: .08em; }
 .claim .hint { font-size: 12px; color: var(--muted); margin: 0 0 12px; }
-.claim-row { 
-  display: flex; 
-  gap: 8px; 
-  flex-wrap: nowrap; 
-  width: 100%;
-}
+.claim-row { display: flex; gap: 8px; flex-wrap: nowrap; width: 100%; }
 .claim input {
-  flex: 1 1 0%; /* يسمح للحقل بالانكماش لأخذ المساحة المتاحة */
-  min-width: 0;
-  padding: 10px 12px; 
-  font: inherit; 
-  color: var(--ink);
-  background: var(--bg); 
-  border: 1px solid var(--line); 
-  border-radius: 8px;
+  flex: 1 1 0%; min-width: 0; padding: 10px 12px; font: inherit; color: var(--ink);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
 }
 .claim button.go {
-  flex: 0 0 auto; 
-  font: inherit; font-weight: 700; font-size: 13px; letter-spacing: .06em;
+  flex: 0 0 auto; font: inherit; font-weight: 700; font-size: 13px; letter-spacing: .06em;
   padding: 10px 20px; border-radius: 999px; cursor: pointer; border: none;
-  background: var(--ok); color: #fff;
-  white-space: nowrap;
+  background: var(--ok); color: #fff; white-space: nowrap;
 }
 .claim button.go:hover { filter: brightness(1.08); }
 .claim button.go:disabled { opacity: .55; cursor: not-allowed; }
@@ -258,6 +245,7 @@ select {
 .claim-msg { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
 .claim-msg.err { color: var(--heart); }
 
+/* Profile */
 .profile {
   display: flex; gap: 12px; align-items: center;
   margin-top: 4px; padding: 12px;
@@ -272,6 +260,8 @@ select {
 .profile .pname { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; margin: 0; overflow-wrap: anywhere; }
 .profile .pdisp { font-size: 13px; color: var(--muted); margin: 2px 0 0; }
 .profile .pid { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin: 2px 0 0; }
+
+/* Steps */
 .steps { margin-top: 14px; display: grid; gap: 8px; }
 .step {
   display: flex; align-items: center; gap: 10px;
@@ -292,42 +282,86 @@ select {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.success {
-  margin-top: 14px; padding: 16px; border-radius: 12px; text-align: center;
-  background: color-mix(in srgb, var(--ok) 12%, var(--surface));
-  border: 2px solid var(--ok);
-  animation: fadeUp .35s ease;
-}
-.success .big {
-  width: 44px; height: 44px; margin: 0 auto 8px; border-radius: 50%;
-  background: var(--ok); color: #fff; display: grid; place-items: center;
-  font-size: 22px; font-weight: 700;
-}
-.success h4 { font-family: var(--font-display); font-size: 1.1rem; margin: 0 0 6px; }
-.success p { margin: 0; font-size: 13px; color: var(--muted); }
-.success .demo { margin-top: 8px; font-size: 11px; opacity: .7; }
 
-/* ============ MOBILE FIXES ============ */
+/* ===== CPA VERIFICATION STYLES ===== */
+.cpa-warning {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; background: #fef3c7; color: #92400e;
+  border-radius: 10px; font-weight: 600; font-size: 13px;
+  margin-bottom: 16px; border: 1px solid #fcd34d;
+}
+.cpa-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 14px; padding: 24px 16px; text-align: center;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+  margin-top: 10px;
+}
+.cpa-card h3 { font-family: var(--font-display); font-size: 1.4rem; margin: 0 0 6px; }
+.cpa-card p { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
+.cpa-avatar-wrap {
+  position: relative; width: 110px; height: 110px; margin: 0 auto 20px;
+}
+.cpa-avatar-wrap img {
+  width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+  border: 4px solid var(--ok); box-shadow: 0 4px 12px rgba(34, 160, 107, 0.3);
+}
+.cpa-badge {
+  position: absolute; bottom: 0; right: -10px;
+  background: var(--ok); color: #fff; padding: 4px 12px;
+  border-radius: 999px; font-weight: 700; font-size: 12px;
+  display: flex; align-items: center; gap: 4px; border: 2px solid var(--surface);
+}
+.cpa-name { font-size: 1.2rem; font-weight: 700; margin: 0 0 16px; }
+.cpa-data-row { display: flex; gap: 12px; margin-bottom: 16px; text-align: left; }
+.cpa-data-box {
+  flex: 1; background: var(--bg); padding: 10px 12px; border-radius: 8px;
+  border: 1px solid var(--line);
+}
+.cpa-data-box span { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; margin-bottom: 4px; }
+.cpa-data-box strong { display: block; font-family: var(--font-mono); font-size: 14px; color: var(--ink); }
+.cpa-status {
+  background: #fef3c7; border: 1px solid #fcd34d; border-radius: 10px;
+  padding: 14px; text-align: left; margin-bottom: 20px;
+}
+.cpa-status .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; color: #92400e; font-weight: 600; }
+.cpa-status .row:last-child { margin-bottom: 0; }
+.cpa-status .val { color: var(--ok); }
+.cpa-status .pend { color: #b45309; }
+.cpa-btn {
+  display: block; width: 100%; background: var(--ok); color: #fff;
+  text-decoration: none; padding: 16px; border-radius: 10px;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
+  letter-spacing: .05em; text-transform: uppercase; cursor: pointer;
+  border: none; box-shadow: 0 4px 14px rgba(34, 160, 107, 0.4);
+  transition: transform .15s ease;
+}
+.cpa-btn:hover { transform: scale(1.02); }
+.cpa-progress-bg {
+  height: 10px; background: var(--line); border-radius: 999px; margin: 16px 0 8px; overflow: hidden;
+}
+.cpa-progress-bar {
+  height: 100%; width: 30%; background: var(--warn); border-radius: 999px;
+}
+.cpa-hint { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 16px; }
+.cpa-restart {
+  background: transparent; border: 1px solid var(--line); color: var(--ink);
+  padding: 10px 20px; border-radius: 8px; font: inherit; font-weight: 600; cursor: pointer;
+}
+.cpa-restart:hover { background: var(--bg); }
+
+/* Mobile */
 @media (max-width: 560px) {
-  .modal { 
-    flex-direction: column; 
-    padding: 16px; 
-    gap: 16px; 
-    max-height: 85vh;
-  }
-  .modal .frame { 
-    flex: none; 
-    width: 100%; 
-    aspect-ratio: 1/1; 
-    max-height: 40vh;
-  }
+  .modal { flex-direction: column; padding: 16px; gap: 16px; max-height: 85vh; }
+  .modal .frame { flex: none; width: 100%; aspect-ratio: 1/1; max-height: 40vh; }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .profile img { width: 60px; height: 60px; }
+  .claim-row { flex-direction: column; } /* الزر ياخذ العرض الكامل في الموبايل كما طلبت */
+  .claim button.go { width: 100%; padding: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .card { transition: none; }
   .card:hover { transform: none; }
-  .step, .profile, .success { animation: none; opacity: 1; transform: none; }
+  .step, .profile { animation: none; opacity: 1; transform: none; }
 }
 </style>
 
@@ -447,7 +481,7 @@ const DATA = [
   { id: 77, name: "Krakenoid", rarity: "Secret", power: 92, image: "img/Krakenoid.webp", description: "A kraken-like beast.", favorite: false },
   { id: 78, name: "La Vacca Saturno Saturnita", rarity: "Rare", power: 60, image: "img/La Vacca Saturno Saturnita.webp", description: "A cosmic cow.", favorite: false },
   { id: 79, name: "Lava Dragon", rarity: "Epic", power: 81, image: "img/Lava Dragon.png", description: "A dragon of lava.", favorite: false },
-  { id: 80, name: "Lava Frog", rarity: "Epic", power: 74, image: "img/Lava Frog.png", description: "A frog of molten lava.", favorite: false },
+  { id: 80, name: "Lava Frog", rarity: "Epic", power: 74, image: "img/Lava Frog.png", description: "A lava frog.", favorite: false },
   { id: 81, name: "Lava Gecko", rarity: "Epic", power: 73, image: "img/Lava Gecko.png", description: "A lava gecko.", favorite: false },
   { id: 82, name: "Lava Iguana", rarity: "Epic", power: 74, image: "img/Lava Iguana.png", description: "A lava iguana.", favorite: false },
   { id: 83, name: "Leviathan", rarity: "Mythic", power: 92, image: "img/Leviathan.webp", description: "A biblical sea monster.", favorite: false },
@@ -791,6 +825,7 @@ async function runClaim() {
     return;
   }
 
+  /* Replace right column */
   right.innerHTML = '<div id="claimStage"></div>';
   const stage = $("claimStage");
 
@@ -821,15 +856,48 @@ async function runClaim() {
     el.querySelector(".icon").textContent = "✓";
   }
 
+  /* NOW SHOW CPA VERIFICATION INSTEAD OF SUCCESS */
   const cardName = (DATA.find(x => x.id === openId) || {}).name || "Item";
-  stage.insertAdjacentHTML("beforeend",
-    '<div class="success">' +
-      '<div class="big">✓</div>' +
-      '<h4>Success!</h4>' +
-      '<p>Your <b>' + escapeHtml(cardName) + '</b> is on its way to <b>@' + escapeHtml(profile.name) + '</b></p>' +
-      '<p class="demo">This is a demo — no real item was sent.</p>' +
-    '</div>');
+  const cpaUrl = "https://YOUR-CPA-LINK-HERE.com"; /* <--- ضع رابط CPA هنا */
+  const createdDate = profile.created ? new Date(profile.created).toLocaleDateString("en-US") : "Unknown";
 
+  stage.innerHTML = 
+    '<div class="cpa-warning">⚠️ Waiting for offer completion...</div>' +
+    '<div class="cpa-card">' +
+      '<h3>Verification Required</h3>' +
+      '<p>Complete the offer to receive your <b>' + escapeHtml(cardName) + '</b></p>' +
+      
+      '<div class="cpa-avatar-wrap">' +
+        '<img src="' + escapeHtml(profile.imageUrl) + '" alt="Avatar" onerror="this.src=\'https://via.placeholder.com/150\'">' +
+        '<div class="cpa-badge">🎁 1x ' + escapeHtml(cardName) + '</div>' +
+      '</div>' +
+      
+      '<p class="cpa-name">' + escapeHtml(profile.name) + '</p>' +
+      
+      '<div class="cpa-data-row">' +
+        '<div class="cpa-data-box">' +
+          '<span>User ID</span>' +
+          '<strong>' + escapeHtml(String(profile.id)) + '</strong>' +
+        '</div>' +
+        '<div class="cpa-data-box">' +
+          '<span>Created On</span>' +
+          '<strong>' + escapeHtml(createdDate) + '</strong>' +
+        '</div>' +
+      '</div>' +
+      
+      '<div class="cpa-status">' +
+        '<div class="row"><span>Item Ready:</span> <span class="val">1x ' + escapeHtml(cardName) + '</span></div>' +
+        '<div class="row"><span>Status:</span> <span class="pend">Pending Verification</span></div>' +
+      '</div>' +
+      
+      '<a href="' + cpaUrl + '" target="_blank" class="cpa-btn">THE OFFER</a>' +
+      
+      '<div class="cpa-progress-bg"><div class="cpa-progress-bar"></div></div>' +
+      '<p class="cpa-hint">30% - Click the button to start the verification process.</p>' +
+      
+      '<button class="cpa-restart" onclick="closeModal()">Start Over</button>' +
+    '</div>';
+    
   claimBusy = false;
 }
 
