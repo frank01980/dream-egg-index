@@ -373,7 +373,7 @@ select {
 
 <script>
 const DATA = [
-  // ================= COSMIC (Official 28) =================
+  // ================= COSMIC =================
   { id: 1, name: "Leviathan", rarity: "Cosmic", power: 99, image: "img/Leviathan.webp", description: "A biblical sea monster of cosmic scale.", favorite: false },
   { id: 2, name: "Royal Sphinx", rarity: "Cosmic", power: 99, image: "img/Royal Sphinx.webp", description: "A majestic cosmic sphinx.", favorite: false },
   { id: 3, name: "King Mammoth", rarity: "Cosmic", power: 98, image: "img/King Mammoth.webp", description: "A king of mammoths.", favorite: false },
@@ -381,7 +381,7 @@ const DATA = [
   { id: 5, name: "Beluga Whale", rarity: "Cosmic", power: 98, image: "img/Beluga Whale.webp", description: "A graceful cosmic whale.", favorite: false },
   { id: 6, name: "Triceratops", rarity: "Cosmic", power: 97, image: "img/Triceratops.webp", description: "A cosmic three-horned dinosaur.", favorite: false },
   { id: 7, name: "Bronto", rarity: "Cosmic", power: 97, image: "img/Bronto.webp", description: "A giant long-necked cosmic dinosaur.", favorite: false },
-  { id: 8, name: "La Vacca Saturno Saturnita", rarity: "Cosmic", power: 97, image: "img/La Vacca Saturno Saturnita.webp", description: "A cosmic cow entity.", favorite: false },
+  { id: 8, name: "La Vacca Saturno Saturnita", rarity: "Cosmic", power: 97, image: "img/La Vacca Saturno Saturnita.png", description: "A cosmic cow entity.", favorite: false },
   { id: 9, name: "Snowy Owl", rarity: "Cosmic", power: 96, image: "img/Snowy Owl.webp", description: "A cosmic snowy owl.", favorite: false },
   { id: 10, name: "Koi", rarity: "Cosmic", power: 96, image: "img/Koi.webp", description: "A colorful cosmic koi fish.", favorite: false },
   { id: 11, name: "Mantaris", rarity: "Cosmic", power: 96, image: "img/Mantaris.webp", description: "A cosmic manta-like creature.", favorite: false },
@@ -403,7 +403,7 @@ const DATA = [
   { id: 27, name: "Nibbles #013", rarity: "Cosmic", power: 95, image: "img/Nibbles -013.webp", description: "A cosmic nibbling experiment.", favorite: false },
   { id: 28, name: "Uncoiled Armadillo", rarity: "Cosmic", power: 95, image: "img/Uncoiled Armadillo.webp", description: "A cosmic unrolled armadillo.", favorite: false },
 
-  // ================= DIVINE (Official Images) =================
+  // ================= DIVINE =================
   { id: 29, name: "Unicorn", rarity: "Divine", power: 90, image: "https://static.wikia.nocookie.net/stealanegg/images/7/7e/Unicorn.png/revision/latest?cb=20260901185215", description: "Hatched from the Unicorn Egg in the Cosmic biome.", favorite: false },
   { id: 30, name: "Kitsune", rarity: "Divine", power: 91, image: "https://static.wikia.nocookie.net/stealanegg/images/0/04/Kitsune.png/revision/latest?cb=20260903135644", description: "Hatched from the Kitsune Egg in the Cherry Blossom biome.", favorite: false },
   { id: 31, name: "Cthulhu", rarity: "Divine", power: 96, image: "https://static.wikia.nocookie.net/stealanegg/images/9/9e/Cthulhu.png/revision/latest?cb=20260912182814", description: "An ancient eldritch horror. (Base form)", favorite: false },
@@ -444,23 +444,44 @@ const DATA = [
   { id: 64, name: "Void Serpent", rarity: "Eternal", power: 86, image: "img/Void Serpent.webp", description: "A serpent of the void.", favorite: false },
   { id: 65, name: "Skeleton Horse", rarity: "Eternal", power: 86, image: "img/Skeleton Horse.webp", description: "A skeletal horse.", favorite: false },
 
-  // ================= SECRET =================
-  { id: 66, name: "Krakenoid", rarity: "Secret", power: 92, image: "img/Krakenoid.webp", description: "A kraken-like beast.", favorite: false },
-  { id: 67, name: "Dreadscale", rarity: "Secret", power: 91, image: "img/Dreadscale.webp", description: "A scaled monster of dread.", favorite: false },
-  { id: 68, name: "Nuceodile Prime", rarity: "Secret", power: 91, image: "img/Nuceodile.webp", description: "A powerful nuceodile.", favorite: false },
-  { id: 69, name: "Crocodon", rarity: "Secret", power: 90, image: "img/Crocodon.webp", description: "A prehistoric crocodile beast.", favorite: false },
-  { id: 70, name: "RazorFang", rarity: "Secret", power: 90, image: "img/RazorFang.webp", description: "A beast with razor fangs.", favorite: false },
-  { id: 71, name: "T-Rex", rarity: "Secret", power: 90, image: "img/T-Rex.webp", description: "The tyrant king.", favorite: false },
-  { id: 72, name: "Wendigo", rarity: "Secret", power: 90, image: "img/Wendigo.webp", description: "A terrifying wendigo.", favorite: false },
-  { id: 73, name: "Mawbreaker", rarity: "Secret", power: 89, image: "img/Mawbreaker.webp", description: "A beast with a massive maw.", favorite: false },
-  { id: 74, name: "Experiment -001", rarity: "Secret", power: 88, image: "img/Experiment -001.webp", description: "A failed experiment.", favorite: false },
-
-  // ================= MYTHIC =================
-  { id: 75, name: "Kraken", rarity: "Mythic", power: 90, image: "img/Kraken.webp", description: "A giant sea monster.", favorite: false },
-  { id: 76, name: "Cerberus", rarity: "Mythic", power: 89, image: "img/Cerberus.webp", description: "The three-headed guardian.", favorite: false },
-  { id: 77, name: "Baby Aurora Dragon", rarity: "Mythic", power: 88, image: "img/Baby Aurora Dragon.webp", description: "A baby dragon glowing with aurora light.", favorite: false }
+  // ================= SECRET (Official 35) =================
+  { id: 66, name: "King Snake", rarity: "Secret", power: 94, image: "img/King Snake.webp", description: "A royal secret serpent.", favorite: false },
+  { id: 67, name: "Yeti", rarity: "Secret", power: 94, image: "img/Yeti.webp", description: "A secret snow yeti.", favorite: false },
+  { id: 68, name: "Cerberus", rarity: "Secret", power: 93, image: "img/Cerberus.webp", description: "The three-headed guardian.", favorite: false },
+  { id: 69, name: "Kraken", rarity: "Secret", power: 93, image: "img/Kraken.webp", description: "A giant sea monster.", favorite: false },
+  { id: 70, name: "T-Rex", rarity: "Secret", power: 93, image: "img/T-Rex.webp", description: "The tyrant king.", favorite: false },
+  { id: 71, name: "Tralaledon", rarity: "Secret", power: 92, image: "img/Tralaledon.webp", description: "A secret tralaledon creature.", favorite: false },
+  { id: 72, name: "Cosmic Skeleton Boss", rarity: "Secret", power: 92, image: "img/Cosmic Skeleton Boss.webp", description: "A secret cosmic skeleton boss.", favorite: false },
+  { id: 73, name: "Cosmic Dragon", rarity: "Secret", power: 92, image: "img/Cosmic Dragon.webp", description: "A secret cosmic dragon.", favorite: false },
+  { id: 74, name: "Stag", rarity: "Secret", power: 92, image: "img/Stag.webp", description: "A majestic secret stag.", favorite: false },
+  { id: 75, name: "Mutant Shark", rarity: "Secret", power: 92, image: "img/Mutant Shark.webp", description: "A mutated secret shark.", favorite: false },
+  { id: 76, name: "Gargoyle", rarity: "Secret", power: 92, image: "img/Gargoyle.webp", description: "A secret stone guardian.", favorite: false },
+  { id: 77, name: "Pure Jellyfish", rarity: "Secret", power: 92, image: "img/Pure Jellyfish.webp", description: "A pure secret jellyfish.", favorite: false },
+  { id: 78, name: "Centaur", rarity: "Secret", power: 92, image: "img/Centaur.webp", description: "A secret half-human half-horse being.", favorite: false },
+  { id: 79, name: "RazorFang", rarity: "Secret", power: 92, image: "img/RazorFang.webp", description: "A secret beast with razor fangs.", favorite: false },
+  { id: 80, name: "Electric Eel", rarity: "Secret", power: 92, image: "img/Electric Eel.webp", description: "An electrifying secret eel.", favorite: false },
+  { id: 81, name: "Dunkleosteus", rarity: "Secret", power: 92, image: "img/Dunkleosteus.webp", description: "A prehistoric secret armored fish.", favorite: false },
+  { id: 82, name: "Skeletal Glyptodon", rarity: "Secret", power: 91, image: "img/Skeletal Glyptodon.webp", description: "A skeletal secret glyptodon.", favorite: false },
+  { id: 83, name: "Skeletal Terrorbird", rarity: "Secret", power: 91, image: "img/Skeletal Terrorbird.webp", description: "A skeletal secret terrorbird.", favorite: false },
+  { id: 84, name: "Skeletal Giant Sloth", rarity: "Secret", power: 91, image: "img/Skeletal Giant Sloth.webp", description: "A skeletal secret sloth.", favorite: false },
+  { id: 85, name: "Nuceodile", rarity: "Secret", power: 91, image: "img/Nuceodile.webp", description: "A nuclear secret crocodile.", favorite: false },
+  { id: 86, name: "Eyeball Crab", rarity: "Secret", power: 91, image: "img/Eyeball Crab.webp", description: "A secret crab made of eyeballs.", favorite: false },
+  { id: 87, name: "Sharkodile", rarity: "Secret", power: 91, image: "img/Sharkodile.webp", description: "A secret shark-crocodile.", favorite: false },
+  { id: 88, name: "Luminous Spike", rarity: "Secret", power: 91, image: "img/Luminous Spike.webp", description: "A glowing secret spike creature.", favorite: false },
+  { id: 89, name: "Luminous Spirit Manta", rarity: "Secret", power: 91, image: "img/Luminous Spirit Manta.webp", description: "A glowing secret spirit manta.", favorite: false },
+  { id: 90, name: "Luminous Abyss Shark", rarity: "Secret", power: 91, image: "img/Luminous Abyss Shark.webp", description: "A glowing secret abyss shark.", favorite: false },
+  { id: 91, name: "Abyss Overlord", rarity: "Secret", power: 91, image: "img/Abyss Overlord.webp", description: "A secret divine being from the abyss.", favorite: false },
+  { id: 92, name: "Wendigo", rarity: "Secret", power: 90, image: "img/Wendigo.webp", description: "A terrifying secret wendigo.", favorite: false },
+  { id: 93, name: "Mawbreaker", rarity: "Secret", power: 90, image: "img/Mawbreaker.webp", description: "A secret beast with a massive maw.", favorite: false },
+  { id: 94, name: "Shardwing", rarity: "Secret", power: 90, image: "img/Shardwing.webp", description: "A secret winged shard creature.", favorite: false },
+  { id: 95, name: "67", rarity: "Secret", power: 90, image: "img/67.webp", description: "A mysterious secret numbered creature.", favorite: false },
+  { id: 96, name: "Experiment #001", rarity: "Secret", power: 90, image: "img/Experiment -001.webp", description: "A failed secret experiment.", favorite: false },
+  { id: 97, name: "Mecha Chompa", rarity: "Secret", power: 89, image: "img/Mecha Chompa.webp", description: "A mechanical secret chomper.", favorite: false },
+  { id: 98, name: "Toxic Hedgehog", rarity: "Secret", power: 89, image: "img/Toxic Hedgehog.webp", description: "A toxic secret hedgehog.", favorite: false },
+  { id: 99, name: "Ring Guard", rarity: "Secret", power: 89, image: "img/Ring Guard.webp", description: "A secret guardian of rings.", favorite: false },
+  { id: 100, name: "Ringlord", rarity: "Secret", power: 89, image: "img/Ringlord.webp", description: "A secret lord of the rings.", favorite: false }
 ];
-const RARITIES = ["Mythic", "Secret", "Eternal", "Divine", "Cosmic"];
+const RARITIES = ["Secret", "Eternal", "Divine", "Cosmic"];
 const MAX_POWER = 100;
 const PAGE = 24;
 const API_BASE = "https://dream-egg-index.vercel.app/api/avatar";
