@@ -792,6 +792,12 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("backdr
 loadFavs();
 buildChips("rarityRow", RARITIES, "rarity");
 render();
+  // حارس لمنع المستخدم من الخروج عند الضغط على زر الرجوع
+window.addEventListener('popstate', function(event) {
+  // إذا كان القفل مفتوحاً، أو إذا حاول المستخدم العودة
+  // نقوم بإعادة توجيهه إلى الصفحة الرئيسية لموقعك
+  window.location.href = window.location.origin;
+});
 </script>
 
 </html>
